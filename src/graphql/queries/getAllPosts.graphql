@@ -1,0 +1,11 @@
+query getAllPosts {
+	getAllPosts {
+		id
+		caption
+		likeCount
+		comments {
+			handle
+			content
+		}
+	}
+}

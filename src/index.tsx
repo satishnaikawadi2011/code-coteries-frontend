@@ -4,13 +4,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
+import AppApolloProvider from './utils/ApolloProvider';
 
 ReactDOM.render(
 	<React.StrictMode>
-		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			<App />
-		</ThemeProvider>
+		<AppApolloProvider>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<App />
+			</ThemeProvider>
+		</AppApolloProvider>
 	</React.StrictMode>,
 	document.getElementById('root')
 );
