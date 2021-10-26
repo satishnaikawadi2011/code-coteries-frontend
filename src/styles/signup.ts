@@ -2,8 +2,8 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 /* Login page: /pages/login.js */
-export const useLoginPageStyles = makeStyles((theme: Theme) => ({
-	signUpCard:
+export const useSignupPageStyles = makeStyles((theme: Theme) => ({
+	loginCard:
 		{
 			maxWidth: 348,
 			padding: '16px 40px',
@@ -30,6 +30,14 @@ export const useLoginPageStyles = makeStyles((theme: Theme) => ({
 			justifyContent: 'center',
 			alignItems: 'center'
 		},
+	cardHeaderSubHeader:
+		{
+			textAlign: 'center',
+			fontWeight: 'bold !important' as any,
+			lineHeight: 1.2,
+			color: '#999',
+			margin: '20 !important' as any
+		},
 	textField:
 		{
 			marginBottom: 6
@@ -37,9 +45,5 @@ export const useLoginPageStyles = makeStyles((theme: Theme) => ({
 	button:
 		{
 			margin: '8px 0px'
-		},
-	typography:
-		{
-			margin: '10px 0px'
 		}
 }));
