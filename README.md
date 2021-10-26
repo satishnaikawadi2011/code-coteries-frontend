@@ -60,3 +60,4 @@ Components:
 - LoadingScreen
 - PostOptionsDialog
 - ProfilePicture
+- SEO
