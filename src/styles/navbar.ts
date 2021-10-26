@@ -23,30 +23,6 @@ export const useNavbarStyles = makeStyles((theme: Theme) => ({
 			justifyContent: 'center',
 			padding: '0px 20px'
 		},
-	logoContainer:
-		{
-			display: 'flex',
-			flex: '1 9999 0%',
-			minWidth: 40
-		},
-	logoWrapper:
-		{
-			flex: '0 0 auto',
-			justifyContent: 'flex-start',
-			alignItems: 'center',
-			alignContent: 'stretch'
-		},
-	logo:
-		{
-			marginTop: 10,
-			fontFamily: 'Bukhari',
-			fontSize: 30
-		},
-	logoLink:
-		{
-			textDecoration: 'none',
-			color: '#000000'
-		},
 	input:
 		{
 			height: 28,
