@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
+function LogoIcon({ height = 50, width = 50, ...props }: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			id="prefix__Icons"
@@ -9,11 +9,13 @@ function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
 			y={0}
 			viewBox="0 0 32 32"
 			xmlSpace="preserve"
+			height={height}
+			width={width}
 			{...props}
 		>
 			<style>
 				{
-					'.prefix__st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}'
+					'.prefix__st0{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}'
 				}
 			</style>
 			<path className="prefix__st0" d="M27 19V6H5v13M30 26H2l2-4h24z" />
