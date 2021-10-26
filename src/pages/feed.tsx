@@ -1,10 +1,10 @@
 import React from 'react';
-import LoadingScreen from 'src/components/shared/LoadingScreen';
+// import { LoadingLargeIcon } from 'src/icons/LargeLoadingIcon';
 
 const FeedPage = () => {
-	// return <h1>Feed Page</h1>;
+	return <h1>Feed Page</h1>;
 
-	return <LoadingScreen />;
+	// return <LoadingLargeIcon />;
 };
 
 export default FeedPage;
