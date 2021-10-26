@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLogoStyles } from 'src/styles/logo';
 
-interface LogoProps {
+export interface LogoProps {
 	size?: string | number;
+	noLink?: boolean;
+	centre?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = 20 }) => {
-	const classes = useLogoStyles();
+const Logo: React.FC<LogoProps> = ({ size = 20, noLink, centre }) => {
+	const classes = useLogoStyles({ size, noLink, centre });
 	return (
 		<div className={classes.logoContainer}>
 			<Link to="/" className={classes.logoLink}>

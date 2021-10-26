@@ -1,11 +1,16 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { LogoProps } from 'src/components/shared/Logo';
 
-export const useLogoStyles = makeStyles((theme: Theme) => ({
+export const useLogoStyles = makeStyles<Theme, LogoProps>((theme: Theme) => ({
 	logoContainer:
 		{
 			display: 'flex',
-			flex: '1 9999 0%',
+			flex:
+				({ centre }) =>
+
+						centre ? '1 1 1' :
+						'1 9999 0%',
 			minWidth: 40
 		},
 	logoWrapper:
