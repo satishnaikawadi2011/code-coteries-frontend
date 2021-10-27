@@ -77,7 +77,9 @@ export type languageName =
 	| 'xquery'
 	| 'yaml';
 
-export const languages: Record<languageName, string> = {
+export type LanguageObjType = Record<languageName, string>;
+
+export const languages: LanguageObjType = {
 	auto: 'Auto',
 	apache: 'Apache',
 	bash: 'Bash',

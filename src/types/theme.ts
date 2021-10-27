@@ -27,7 +27,9 @@ export type themeName =
 	| 'yeti'
 	| 'zenburn';
 
-export const themes: Record<themeName, string> = {
+export type ThemeObjType = Record<themeName, string>;
+
+export const themes: ThemeObjType = {
 	'a11y-dark': 'A11y Dark',
 	blackboard: 'Blackboard',
 	'base16-dark': 'Base 16 (Dark)',

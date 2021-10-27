@@ -7,7 +7,7 @@ import { useFormikContext } from 'formik';
 import { useFormStyles } from '../../../styles/form';
 import AppFormErrorMessage from './AppFormErrorMessage';
 
-interface OptionType {
+export interface OptionType {
 	value: any;
 	label: string;
 }
