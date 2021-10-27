@@ -28,6 +28,9 @@ Components:
 - PostSkeleton
 
 
+- /p/create  (create post page)
+
+
 - notification
 
 Components:

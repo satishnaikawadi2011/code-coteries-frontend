@@ -9,5 +9,16 @@ export const useFormStyles = makeStyles((theme: Theme) => ({
 	field:
 		{
 			maxWidth: 600
+		},
+	textarea:
+		{
+			padding: 20,
+			borderRadius: 10,
+			width: 1000
+		},
+	label:
+		{
+			margin: 10,
+			fontWeight: 'bold !important' as any
 		}
 }));
