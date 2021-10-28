@@ -69,6 +69,7 @@ export type CreatePostInput = {
 
 export type CreateUserInput = {
   email: Scalars['String'];
+  fullName: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
 };
@@ -384,6 +385,7 @@ export type User = {
   events?: Maybe<Array<Event>>;
   followerCount: Scalars['Float'];
   followingCount: Scalars['Float'];
+  fullName: Scalars['String'];
   id: Scalars['String'];
   is_active: Scalars['Boolean'];
   is_admin: Scalars['Boolean'];
@@ -394,12 +396,107 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string };
+
+export type SigninUserMutationVariables = Exact<{
+  signinUserInput: SigninUserInput;
+}>;
+
+
+export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string } } };
+
+export type RegisterUserMutationVariables = Exact<{
+  createUserInput: CreateUserInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string } } };
+
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, likeCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, content: string }> | null | undefined }> };
 
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  username
+  fullName
+  email
+}
+    `;
+export const SigninUserDocument = gql`
+    mutation signinUser($signinUserInput: SigninUserInput!) {
+  signinUser(signinUserInput: $signinUserInput) {
+    user {
+      ...RegularUser
+    }
+    token
+  }
+}
+    ${RegularUserFragmentDoc}`;
+export type SigninUserMutationFn = Apollo.MutationFunction<SigninUserMutation, SigninUserMutationVariables>;
 
+/**
+ * __useSigninUserMutation__
+ *
+ * To run a mutation, you first call `useSigninUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSigninUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signinUserMutation, { data, loading, error }] = useSigninUserMutation({
+ *   variables: {
+ *      signinUserInput: // value for 'signinUserInput'
+ *   },
+ * });
+ */
+export function useSigninUserMutation(baseOptions?: Apollo.MutationHookOptions<SigninUserMutation, SigninUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SigninUserMutation, SigninUserMutationVariables>(SigninUserDocument, options);
+      }
+export type SigninUserMutationHookResult = ReturnType<typeof useSigninUserMutation>;
+export type SigninUserMutationResult = Apollo.MutationResult<SigninUserMutation>;
+export type SigninUserMutationOptions = Apollo.BaseMutationOptions<SigninUserMutation, SigninUserMutationVariables>;
+export const RegisterUserDocument = gql`
+    mutation registerUser($createUserInput: CreateUserInput!) {
+  registerUser(createUserInput: $createUserInput) {
+    user {
+      ...RegularUser
+    }
+    token
+  }
+}
+    ${RegularUserFragmentDoc}`;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
+
+/**
+ * __useRegisterUserMutation__
+ *
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
+ *   variables: {
+ *      createUserInput: // value for 'createUserInput'
+ *   },
+ * });
+ */
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
 export const GetAllPostsDocument = gql`
     query getAllPosts {
   getAllPosts {

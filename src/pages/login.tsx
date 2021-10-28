@@ -2,10 +2,12 @@ import { Button, Card, Typography } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AppForm from 'src/components/shared/form/AppForm';
+import AppErrorMessage from 'src/components/shared/form/AppFormErrorMessage';
 import AppFormField from 'src/components/shared/form/AppFormField';
 import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton';
 import Logo from 'src/components/shared/Logo';
 import SEO from 'src/components/shared/Seo';
+import { useSigninUserMutation } from 'src/generated/graphql';
 import { useLoginPageStyles } from 'src/styles/login';
 import * as Yup from 'yup';
 
@@ -22,9 +24,14 @@ const authSchema = Yup.object({
 const LoginPage = () => {
 	const classes = useLoginPageStyles();
 
-	const submitHandler = (values: any) => {
+	const [signinUser, { loading, data, error }] = useSigninUserMutation()
+	
+	console.log(data);
+
+	const submitHandler = async(values: any,actions:any) => {
 		const { username, password } = values;
-		console.log(username, password);
+		await signinUser({ variables: { signinUserInput: { password, username } } });
+		actions.resetForm();
 	};
 
 	return (
@@ -56,7 +63,7 @@ const LoginPage = () => {
 								type="password"
 								autoComplete="current-password"
 							/>
-							{/* <AppErrorMessage visible={error} errorMessage="Please check your credentials !!" /> */}
+							<AppErrorMessage visible={!!error} errorMessage={error?.message as any} />
 							{
 								// loading ? <AppLoader height={100} width={100} /> :
 								<AppFormSubmitButton
@@ -64,7 +71,7 @@ const LoginPage = () => {
 									fullWidth
 									variant="contained"
 									color="primary"
-									disabled={false}
+									disabled={loading}
 									title="login"
 								/>
 							}
