@@ -6,8 +6,10 @@
 		"@apollo/client": "^3.4.16",
 		"@emotion/react": "^11.5.0",
 		"@emotion/styled": "^11.3.0",
+		"@mui/icons-material": "^5.0.5",
 		"@mui/material": "^5.0.4",
 		"@mui/styles": "^5.0.1",
+		"@rooks/use-outside-click": "^4.11.2",
 		"@testing-library/jest-dom": "^5.11.4",
 		"@testing-library/react": "^11.1.0",
 		"@testing-library/user-event": "^12.1.10",
@@ -22,6 +24,7 @@
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-helmet": "^6.1.0",
+		"react-lottie": "^1.2.3",
 		"react-router-dom": "^5.3.0",
 		"react-scripts": "4.0.3",
 		"styled-components": "^5.3.3",
@@ -59,6 +62,7 @@
 		"@graphql-codegen/typescript": "2.2.4",
 		"@graphql-codegen/typescript-operations": "2.1.8",
 		"@graphql-codegen/typescript-react-apollo": "3.1.6",
-		"@types/react-helmet": "^6.1.4"
+		"@types/react-helmet": "^6.1.4",
+		"@types/react-lottie": "^1.2.6"
 	}
 }

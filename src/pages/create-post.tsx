@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppForm from 'src/components/shared/form/AppForm';
 import AppFormSelectField, { OptionType } from 'src/components/shared/form/AppFormSelectField';
 import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton';
@@ -8,14 +8,19 @@ import { MY_CARBON_API_BASE_URL } from 'src/constants';
 import { LanguageObjType, languages } from 'src/types/language';
 import { ThemeObjType, themes } from 'src/types/theme';
 import * as Yup from 'yup';
+import AppFormFieldWithEmoji from 'src/components/shared/form/AppFormFieldWithEmoji';
+import { Paper } from '@mui/material';
+import LoadingAnimation from 'src/animations/components/LoadingAnimation';
+import { useCreatePostPageStyles } from 'src/styles/create-post';
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
 	language: Yup.string(),
-	theme: Yup.string()
+	theme: Yup.string(),
+	caption: Yup.string()
 });
 
-const initialValues = { code: '', language: 'auto', theme: 'material' };
+const initialValues = { code: '', language: 'auto', theme: 'material', caption: '' };
 
 const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 	let myObj = obj as any;
@@ -27,7 +32,23 @@ const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 };
 
 const CreatePostPage = () => {
-	const handleSubmit = async (values: any) => {
+	const [
+		loading,
+		setLoading
+	] = useState(false);
+	const [
+		base64URI,
+		setBase64URI
+	] = useState('');
+
+	const [
+		mode,
+		setMode
+	] = useState<'preview' | 'share'>('preview');
+
+	const classes = useCreatePostPageStyles();
+
+	const previewImageHandler = async (values: any) => {
 		const { code, language, theme } = values;
 		const params: any = { code };
 		const searchParams = Object.keys(params)
@@ -35,6 +56,7 @@ const CreatePostPage = () => {
 				return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
 			})
 			.join('&');
+		setLoading(true);
 		const res = await fetch(`${MY_CARBON_API_BASE_URL}?language=${language}&theme=${theme}`, {
 			method: 'POST',
 			headers:
@@ -44,7 +66,24 @@ const CreatePostPage = () => {
 			body: searchParams
 		});
 		const data = await res.json();
-		console.log(data.encodedImage);
+		setBase64URI(data.encodedImage);
+		setLoading(false);
+	};
+
+	const sharePostHandler = async (values: any) => {
+		const { code, language, theme, caption } = values;
+		const transformedCaption = caption.replaceAll('\n', '<br/>');
+		// TODO: Mutation for createPost
+		console.log('Share');
+	};
+
+	const handleSubmit = async (values: any) => {
+		if (mode === 'preview') {
+			previewImageHandler(values);
+		}
+		else if (mode === 'share') {
+			sharePostHandler(values);
+		}
 	};
 	return (
 		<Layout title={`Create Post`}>
@@ -64,7 +103,38 @@ const CreatePostPage = () => {
 					fieldName="code"
 					label="Code Snippet"
 				/>
-				<AppFormSubmitButton color="primary" variant="contained" title="preview" />
+				<AppFormSubmitButton
+					onClick={() => setMode('preview')}
+					disabled={loading}
+					color="primary"
+					variant="contained"
+					title="preview"
+				/>
+				{(loading || base64URI) && (
+					<Paper variant="outlined" className={classes.imageContainer}>
+						{
+							loading ? <LoadingAnimation /> :
+							<img
+								className={classes.image}
+								src={`data:image/png;base64, ${base64URI}`}
+								alt="Code Snippet Preview"
+							/>}
+					</Paper>
+				)}
+				<AppFormFieldWithEmoji
+					textarea
+					minRows={3}
+					fieldName="caption"
+					label="Caption"
+					placeholder="Write your caption here ..."
+				/>
+				<AppFormSubmitButton
+					onClick={() => setMode('share')}
+					disabled={loading}
+					color="primary"
+					variant="contained"
+					title="share"
+				/>
 			</AppForm>
 		</Layout>
 	);

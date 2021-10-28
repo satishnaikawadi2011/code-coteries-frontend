@@ -7,10 +7,25 @@ interface SubmitButtonProps {
 	loading?: boolean;
 }
 
-const AppFormSubmitButton: React.FC<SubmitButtonProps & ButtonProps> = ({ title, loading, disabled, ...props }) => {
+const AppFormSubmitButton: React.FC<SubmitButtonProps & ButtonProps> = ({
+	title,
+	loading,
+	disabled,
+	onClick,
+	...props
+}) => {
 	const { handleSubmit } = useFormikContext();
 	return (
-		<Button disabled={disabled || loading} onClick={handleSubmit as any} {...props}>
+		<Button
+			disabled={disabled || loading}
+			onClick={(e) => {
+				if (onClick) {
+					onClick(e);
+				}
+				handleSubmit();
+			}}
+			{...props}
+		>
 			{title}
 		</Button>
 	);
