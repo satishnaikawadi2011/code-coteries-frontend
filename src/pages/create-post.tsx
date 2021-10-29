@@ -12,15 +12,21 @@ import AppFormFieldWithEmoji from 'src/components/shared/form/AppFormFieldWithEm
 import { Paper } from '@mui/material';
 import LoadingAnimation from 'src/animations/components/LoadingAnimation';
 import { useCreatePostPageStyles } from 'src/styles/create-post';
+import AppFormSelectMultipleField from 'src/components/shared/form/AppFormSelectMultipleField';
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
 	language: Yup.string(),
 	theme: Yup.string(),
-	caption: Yup.string()
+	caption: Yup.string(),
+	tags:
+		Yup.array().of(Yup.string()).test({
+			message: 'You can select maximum of 5 tags. Attach most relevant ones !',
+			test: (arr) => arr!.length <= 5
+		})
 });
 
-const initialValues = { code: '', language: 'auto', theme: 'material', caption: '' };
+const initialValues = { code: '', language: 'auto', theme: 'material', caption: '', tags: [] };
 
 const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 	let myObj = obj as any;
@@ -30,6 +36,19 @@ const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 	});
 	return options;
 };
+
+const dummyTags = [
+	{ id: '1', name: 'Java' },
+	{ id: '2', name: 'Javascript' },
+	{ id: '3', name: 'Go' },
+	{ id: '4', name: 'C' },
+	{ id: '5', name: 'C++' },
+	{ id: '6', name: 'Python' },
+	{ id: '7', name: 'React' },
+	{ id: '8', name: 'HTML' },
+	{ id: '9', name: 'CSS' },
+	{ id: '10', name: 'JQuery' }
+];
 
 const CreatePostPage = () => {
 	const [
@@ -74,7 +93,7 @@ const CreatePostPage = () => {
 		const { code, language, theme, caption } = values;
 		const transformedCaption = caption.replaceAll('\n', '<br/>');
 		// TODO: Mutation for createPost
-		console.log('Share');
+		console.log('Share', values);
 	};
 
 	const handleSubmit = async (values: any) => {
@@ -127,6 +146,16 @@ const CreatePostPage = () => {
 					fieldName="caption"
 					label="Caption"
 					placeholder="Write your caption here ..."
+				/>
+				<AppFormSelectMultipleField
+					label={`Tags`}
+					fieldName="tags"
+					options={dummyTags.map((t) => {
+						return {
+							label: t.name,
+							value: t.id
+						};
+					})}
 				/>
 				<AppFormSubmitButton
 					onClick={() => setMode('share')}
