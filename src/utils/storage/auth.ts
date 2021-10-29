@@ -1,11 +1,12 @@
-import { User } from 'src/generated/graphql';
+import { RegularUserFragment } from './../../generated/graphql';
 import storage, { prefix } from './index';
 
 const key = 'authStorage';
 
 export interface IAuthStorage {
 	token: string;
-	user: User;
+	user: RegularUserFragment;
+	__typename: 'AuthResponse' | undefined;
 }
 
 const set = (data: IAuthStorage) => {

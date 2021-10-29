@@ -1,6 +1,6 @@
 import { Button, Card, Typography } from '@mui/material';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link ,useHistory,Redirect} from 'react-router-dom';
 import AppForm from 'src/components/shared/form/AppForm';
 import AppErrorMessage from 'src/components/shared/form/AppFormErrorMessage';
 import AppFormField from 'src/components/shared/form/AppFormField';
@@ -8,8 +8,10 @@ import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton'
 import Logo from 'src/components/shared/Logo';
 import SEO from 'src/components/shared/Seo';
 import { useSigninUserMutation } from 'src/generated/graphql';
+import useAuth from 'src/hooks/useAuth';
 import { useLoginPageStyles } from 'src/styles/login';
 import * as Yup from 'yup';
+import authStorage from '../utils/storage/auth'
 
 const initialValues = {
 	username: '',
@@ -22,11 +24,23 @@ const authSchema = Yup.object({
 });
 
 const LoginPage = () => {
-	const classes = useLoginPageStyles();
+	const history = useHistory();
 
+	const classes = useLoginPageStyles();
+    const { isAuthenticated } = useAuth()
 	const [signinUser, { loading, data, error }] = useSigninUserMutation()
+
+	useEffect(() => {
+		if (data) {
+			const { token,user,__typename} = data.signinUser;
+			authStorage.set({ token, user, __typename });
+            history.replace('/')
+		}
+	}, [data])
 	
-	console.log(data);
+	if (isAuthenticated) {
+		return <Redirect to="/"/>
+	}
 
 	const submitHandler = async(values: any,actions:any) => {
 		const { username, password } = values;

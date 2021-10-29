@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import FeedPage from './pages/feed';
@@ -10,12 +10,25 @@ import EditProfilePage from './pages/edit-profile';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import CreatePostPage from './pages/create-post';
+import authStorage from './utils/storage/auth';
+import { useAuthStore } from './store/auth';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 function App() {
+	const { setToken, setUser } = useAuthStore();
+
+	useEffect(() => {
+		const authData = authStorage.get();
+		if (authData) {
+			setToken(authData.token);
+			setUser(authData.user);
+		}
+	}, []);
+
 	return (
 		<Router>
 			<Switch>
-				<Route exact path="/" component={FeedPage} />
+				<ProtectedRoute exact path="/" component={FeedPage} />
 				<Route exact path="/explore" component={ExplorePage} />
 				<Route exact path="/accounts/edit" component={EditProfilePage} />
 				<Route exact path="/accounts/login" component={LoginPage} />

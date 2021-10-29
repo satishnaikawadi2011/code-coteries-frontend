@@ -1,6 +1,6 @@
 import { Button, Card, Typography } from '@mui/material';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link ,useHistory,Redirect} from 'react-router-dom';
 import AppForm from 'src/components/shared/form/AppForm';
 import AppErrorMessage from 'src/components/shared/form/AppFormErrorMessage';
 import AppFormField from 'src/components/shared/form/AppFormField';
@@ -8,8 +8,10 @@ import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton'
 import Logo from 'src/components/shared/Logo';
 import SEO from 'src/components/shared/Seo';
 import { useRegisterUserMutation } from 'src/generated/graphql';
+import useAuth from 'src/hooks/useAuth';
 import { useSignupPageStyles } from 'src/styles/signup';
 import * as Yup from 'yup';
+import authStorage from '../utils/storage/auth';
 
 const initialValues = {
 	username: '',
@@ -26,20 +28,36 @@ const authSchema = Yup.object({
 });
 
 const SignupPage = () => {
+
+    const history = useHistory();
+
 	const classes = useSignupPageStyles();
+
+	const { isAuthenticated } = useAuth()
 
 	const [
 		registerUser,
 		{ loading, data, error }
 	] = useRegisterUserMutation();
 
-	console.log('Error => ', error?.message, 'Data => ', data);
+
+	useEffect(() => {
+		if (data) {
+			const { token,user,__typename} = data.registerUser;
+			authStorage.set({ token, user, __typename });
+			history.replace('/');
+		}
+	},[data])
 
 	const submitHandler = async (values: any,actions:any) => {
 		const { username, password, fullName, email } = values;
 		await registerUser({ variables: { createUserInput: { email, fullName, password, username } } });
 		actions.resetForm();
 	};
+
+	if (isAuthenticated) {
+		return <Redirect to="/"/>
+	}
 
 	return (
 		<React.Fragment>
