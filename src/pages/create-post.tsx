@@ -16,6 +16,7 @@ import AppFormSelectMultipleField from 'src/components/shared/form/AppFormSelect
 import { Tag, useGetAllTagsQuery } from 'src/generated/graphql';
 import LoadingScreen from 'src/components/shared/LoadingScreen';
 import useDisplayError from 'src/hooks/useDisplayError';
+import useCloudinaryUpload from 'src/hooks/useCloudinaryUpload';
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
@@ -71,6 +72,8 @@ const CreatePostPage = () => {
 		tagsError
 	]);
 
+	const { data, upload } = useCloudinaryUpload();
+	console.log(data?.url);
 	const previewImageHandler = async (values: any) => {
 		const { code, language, theme } = values;
 		const params: any = { code };
@@ -90,6 +93,7 @@ const CreatePostPage = () => {
 		});
 		const data = await res.json();
 		setBase64URI(data.encodedImage);
+		await upload(`data:image/png;base64,${data.encodedImage}`);
 		setLoading(false);
 	};
 
