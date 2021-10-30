@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppForm from 'src/components/shared/form/AppForm';
 import AppFormSelectField, { OptionType } from 'src/components/shared/form/AppFormSelectField';
 import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton';
 import AppFormTextArea from 'src/components/shared/form/AppFormTextArea';
 import Layout from 'src/components/shared/Layout';
-import { MY_CARBON_API_BASE_URL } from 'src/constants';
 import { LanguageObjType, languages } from 'src/types/language';
 import { ThemeObjType, themes } from 'src/types/theme';
 import * as Yup from 'yup';
@@ -17,10 +16,11 @@ import { Tag, useGetAllTagsQuery } from 'src/generated/graphql';
 import LoadingScreen from 'src/components/shared/LoadingScreen';
 import useDisplayError from 'src/hooks/useDisplayError';
 import useCloudinaryUpload from 'src/hooks/useCloudinaryUpload';
+import useCarbonAPI from 'src/hooks/useCarbonAPI';
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
-	language: Yup.string(),
+	language: Yup.string().required('Please select the language for syntax highlighting !'),
 	theme: Yup.string(),
 	caption: Yup.string(),
 	tags:
@@ -30,7 +30,7 @@ const createPostSchema = Yup.object({
 		})
 });
 
-const initialValues = { code: '', language: 'auto', theme: 'material', caption: '', tags: [] };
+const initialValues = { code: '', language: '', theme: 'material', caption: '', tags: [] };
 
 const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 	let myObj = obj as any;
@@ -72,34 +72,35 @@ const CreatePostPage = () => {
 		tagsError
 	]);
 
-	const { data, upload } = useCloudinaryUpload();
-	console.log(data?.url);
+
+	const { data: cloudinaryData, upload } = useCloudinaryUpload();
+	const { data: carbonData, generateImage } = useCarbonAPI();
+	// console.log(carbonData,"Carrbon");
+
+	useEffect(() => {
+		if (carbonData) {
+			setBase64URI(carbonData.encodedImage);
+		}
+	},[carbonData])
+
 	const previewImageHandler = async (values: any) => {
 		const { code, language, theme } = values;
-		const params: any = { code };
-		const searchParams = Object.keys(params)
-			.map((key: any) => {
-				return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-			})
-			.join('&');
 		setLoading(true);
-		const res = await fetch(`${MY_CARBON_API_BASE_URL}?language=${language}&theme=${theme}`, {
-			method: 'POST',
-			headers:
-				{
-					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-				},
-			body: searchParams
-		});
-		const data = await res.json();
-		setBase64URI(data.encodedImage);
-		await upload(`data:image/png;base64,${data.encodedImage}`);
+		await generateImage(code, theme, language);
+		setBase64URI(carbonData?.encodedImage);
 		setLoading(false);
 	};
 
 	const sharePostHandler = async (values: any) => {
 		const { code, language, theme, caption } = values;
 		const transformedCaption = caption.replaceAll('\n', '<br/>');
+		setLoading(true);
+		await generateImage(code, theme, language);
+		setBase64URI(carbonData?.encodedImage);
+		if (carbonData?.encodedImage) {
+			await upload(`data:image/png;base64,${carbonData?.encodedImage}`);
+		}
+		setLoading(false);
 		// TODO: Mutation for createPost
 		console.log('Share', values);
 	};
