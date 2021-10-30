@@ -37,6 +37,7 @@ export type AddEventInput = {
   event_date: Scalars['String'];
   event_url: Scalars['String'];
   image_url: Scalars['String'];
+  tagIds?: Maybe<Array<Scalars['String']>>;
   title: Scalars['String'];
 };
 
@@ -65,6 +66,12 @@ export type CommentResponse = {
 export type CreatePostInput = {
   caption: Scalars['String'];
   image_url: Scalars['String'];
+  tagIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type CreateTagInput = {
+  description: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type CreateUserInput = {
@@ -173,6 +180,7 @@ export type Mutation = {
   addExperience: Experience;
   createEvent: Event;
   createPost: Post;
+  createTag: Tag;
   editEducation: Education;
   editExperience: Experience;
   editProfile: Profile;
@@ -211,6 +219,11 @@ export type MutationCreateEventArgs = {
 
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
+};
+
+
+export type MutationCreateTagArgs = {
+  createTagInput: CreateTagInput;
 };
 
 
@@ -325,10 +338,13 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   getAllPosts: Array<Post>;
+  getAllTags: Array<Tag>;
   getEvent: Event;
+  getEventsByTag: Array<Event>;
   getMyFollowers: Array<User>;
   getMyFollowings: Array<User>;
   getPost: Post;
+  getPostsByTag: Array<Post>;
   me: User;
 };
 
@@ -344,8 +360,18 @@ export type QueryGetEventArgs = {
 };
 
 
+export type QueryGetEventsByTagArgs = {
+  tagId: Scalars['String'];
+};
+
+
 export type QueryGetPostArgs = {
   postId: Scalars['String'];
+};
+
+
+export type QueryGetPostsByTagArgs = {
+  tagId: Scalars['String'];
 };
 
 export type SigninUserInput = {
@@ -416,6 +442,11 @@ export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, likeCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, content: string }> | null | undefined }> };
+
+export type GetAllTagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllTagsQuery = { __typename?: 'Query', getAllTags: Array<{ __typename?: 'Tag', id: string, name: string, description: string, likes: Array<string>, likesCount: number }> };
 
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
@@ -537,3 +568,41 @@ export function useGetAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAllPostsQueryHookResult = ReturnType<typeof useGetAllPostsQuery>;
 export type GetAllPostsLazyQueryHookResult = ReturnType<typeof useGetAllPostsLazyQuery>;
 export type GetAllPostsQueryResult = Apollo.QueryResult<GetAllPostsQuery, GetAllPostsQueryVariables>;
+export const GetAllTagsDocument = gql`
+    query getAllTags {
+  getAllTags {
+    id
+    name
+    description
+    likes
+    likesCount
+  }
+}
+    `;
+
+/**
+ * __useGetAllTagsQuery__
+ *
+ * To run a query within a React component, call `useGetAllTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllTagsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllTagsQuery, GetAllTagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllTagsQuery, GetAllTagsQueryVariables>(GetAllTagsDocument, options);
+      }
+export function useGetAllTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllTagsQuery, GetAllTagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllTagsQuery, GetAllTagsQueryVariables>(GetAllTagsDocument, options);
+        }
+export type GetAllTagsQueryHookResult = ReturnType<typeof useGetAllTagsQuery>;
+export type GetAllTagsLazyQueryHookResult = ReturnType<typeof useGetAllTagsLazyQuery>;
+export type GetAllTagsQueryResult = Apollo.QueryResult<GetAllTagsQuery, GetAllTagsQueryVariables>;

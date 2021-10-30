@@ -1,0 +1,9 @@
+query getAllTags {
+	getAllTags {
+		id
+		name
+		description
+		likes
+		likesCount
+	}
+}

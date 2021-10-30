@@ -13,6 +13,9 @@ import { Paper } from '@mui/material';
 import LoadingAnimation from 'src/animations/components/LoadingAnimation';
 import { useCreatePostPageStyles } from 'src/styles/create-post';
 import AppFormSelectMultipleField from 'src/components/shared/form/AppFormSelectMultipleField';
+import { Tag, useGetAllTagsQuery } from 'src/generated/graphql';
+import LoadingScreen from 'src/components/shared/LoadingScreen';
+import useDisplayError from 'src/hooks/useDisplayError';
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
@@ -37,18 +40,13 @@ const buildOptions = (obj: ThemeObjType | LanguageObjType): OptionType[] => {
 	return options;
 };
 
-const dummyTags = [
-	{ id: '1', name: 'Java' },
-	{ id: '2', name: 'Javascript' },
-	{ id: '3', name: 'Go' },
-	{ id: '4', name: 'C' },
-	{ id: '5', name: 'C++' },
-	{ id: '6', name: 'Python' },
-	{ id: '7', name: 'React' },
-	{ id: '8', name: 'HTML' },
-	{ id: '9', name: 'CSS' },
-	{ id: '10', name: 'JQuery' }
-];
+const mapTagsToOptions = (tags: any[]) => {
+	let options: OptionType[] = [];
+	tags.forEach((tag) => {
+		options.push({ label: tag.name, value: tag.id });
+	});
+	return options;
+};
 
 const CreatePostPage = () => {
 	const [
@@ -66,6 +64,12 @@ const CreatePostPage = () => {
 	] = useState<'preview' | 'share'>('preview');
 
 	const classes = useCreatePostPageStyles();
+
+	const { data: fetchedTags, loading: tagsLoading, error: tagsError } = useGetAllTagsQuery();
+
+	useDisplayError([
+		tagsError
+	]);
 
 	const previewImageHandler = async (values: any) => {
 		const { code, language, theme } = values;
@@ -104,6 +108,11 @@ const CreatePostPage = () => {
 			sharePostHandler(values);
 		}
 	};
+
+	if (tagsLoading) {
+		return <LoadingScreen />;
+	}
+
 	return (
 		<Layout title={`Create Post`}>
 			<AppForm initialValues={initialValues} validationSchema={createPostSchema} onSubmit={handleSubmit}>
@@ -150,12 +159,11 @@ const CreatePostPage = () => {
 				<AppFormSelectMultipleField
 					label={`Tags`}
 					fieldName="tags"
-					options={dummyTags.map((t) => {
-						return {
-							label: t.name,
-							value: t.id
-						};
-					})}
+					options={
+
+							fetchedTags ? mapTagsToOptions(fetchedTags!.getAllTags) :
+							[]
+					}
 				/>
 				<AppFormSubmitButton
 					onClick={() => setMode('share')}
