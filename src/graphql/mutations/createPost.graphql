@@ -1,0 +1,11 @@
+mutation createPost($createPostInput: CreatePostInput!) {
+	createPost(createPostInput: $createPostInput) {
+		id
+		created_at
+		caption
+		image_url
+		updated_at
+		likes
+		likeCount
+	}
+}

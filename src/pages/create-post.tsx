@@ -12,7 +12,7 @@ import { Paper } from '@mui/material';
 import LoadingAnimation from 'src/animations/components/LoadingAnimation';
 import { useCreatePostPageStyles } from 'src/styles/create-post';
 import AppFormSelectMultipleField from 'src/components/shared/form/AppFormSelectMultipleField';
-import { Tag, useGetAllTagsQuery } from 'src/generated/graphql';
+import { Tag, useCreatePostMutation, useGetAllTagsQuery } from 'src/generated/graphql';
 import LoadingScreen from 'src/components/shared/LoadingScreen';
 import useDisplayError from 'src/hooks/useDisplayError';
 import useCloudinaryUpload from 'src/hooks/useCloudinaryUpload';
@@ -67,43 +67,43 @@ const CreatePostPage = () => {
 	const classes = useCreatePostPageStyles();
 
 	const { data: fetchedTags, loading: tagsLoading, error: tagsError } = useGetAllTagsQuery();
+	const [createPost,{data:createPostData,error:createPostError}] = useCreatePostMutation()
 
 	useDisplayError([
-		tagsError
+		tagsError,
+		createPostError
 	]);
 
 
-	const { data: cloudinaryData, upload } = useCloudinaryUpload();
-	const { data: carbonData, generateImage } = useCarbonAPI();
-	// console.log(carbonData,"Carrbon");
+	const {  upload } = useCloudinaryUpload();
+	const { generateImage } = useCarbonAPI();
 
-	useEffect(() => {
-		if (carbonData) {
-			setBase64URI(carbonData.encodedImage);
-		}
-	},[carbonData])
 
 	const previewImageHandler = async (values: any) => {
 		const { code, language, theme } = values;
 		setLoading(true);
-		await generateImage(code, theme, language);
+		const carbonData = await generateImage(code, theme, language);
 		setBase64URI(carbonData?.encodedImage);
 		setLoading(false);
 	};
 
 	const sharePostHandler = async (values: any) => {
-		const { code, language, theme, caption } = values;
+		const { code, language, theme, caption,tags } = values;
 		const transformedCaption = caption.replaceAll('\n', '<br/>');
 		setLoading(true);
-		await generateImage(code, theme, language);
+		const carbonData = await generateImage(code, theme, language);
 		setBase64URI(carbonData?.encodedImage);
-		if (carbonData?.encodedImage) {
-			await upload(`data:image/png;base64,${carbonData?.encodedImage}`);
-		}
+		const cloudinaryData = await upload(`data:image/png;base64,${carbonData?.encodedImage}`);
+		console.log(cloudinaryData);
+		await createPost({variables:{createPostInput:{caption:transformedCaption,image_url:cloudinaryData.url,tagIds:tags}}})
 		setLoading(false);
-		// TODO: Mutation for createPost
-		console.log('Share', values);
 	};
+
+	useEffect(() => {
+		console.log(createPostData);
+	},[
+		createPostData
+	])
 
 	const handleSubmit = async (values: any) => {
 		if (mode === 'preview') {

@@ -17,8 +17,9 @@ const useCloudinaryUpload = () => {
 			const body = {
 				cloud_name: CLOUDINARY_CLOUD_NAME,
 				upload_preset: CLOUDINARY_UPLOAD_PRESET,
-				file: image
+				file: encodeURI(image)
 			};
+			// console.log(encodeURI(image));
 			const res = await fetch(CLOUDINARY_IMAGE_UPLOAD_BASE_URL, {
 				method: 'post',
 				headers:
@@ -29,7 +30,13 @@ const useCloudinaryUpload = () => {
 			});
 
 			const imageData = await res.json();
+			if (Object.keys(imageData).includes('error')) {
+				console.log(imageData.error);
+				errorAlert('Image upload failed , try again !');
+				return;
+			}
 			setData(imageData);
+			return imageData;
 		} catch (error) {
 			errorAlert('Image upload failed , try again !');
 		}

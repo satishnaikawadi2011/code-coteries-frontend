@@ -27,6 +27,7 @@ const useCarbonAPI = () => {
 			});
 			const resData = await res.json();
 			setData(resData);
+			return resData;
 		} catch (error) {
 			console.log(error);
 			errorAlert('Image generation failed , try again !');
