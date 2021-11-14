@@ -424,6 +424,13 @@ export type User = {
 
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string };
 
+export type CreateEventMutationVariables = Exact<{
+  addEventInput: AddEventInput;
+}>;
+
+
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent: { __typename?: 'Event', id: string, likeCount: number, title: string, description: string, image_url: string, event_url: string, event_date: string, created_at: any, updated_at: any } };
+
 export type CreatePostMutationVariables = Exact<{
   createPostInput: CreatePostInput;
 }>;
@@ -463,6 +470,47 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const CreateEventDocument = gql`
+    mutation createEvent($addEventInput: AddEventInput!) {
+  createEvent(addEventInput: $addEventInput) {
+    id
+    likeCount
+    title
+    description
+    image_url
+    event_url
+    event_date
+    created_at
+    updated_at
+  }
+}
+    `;
+export type CreateEventMutationFn = Apollo.MutationFunction<CreateEventMutation, CreateEventMutationVariables>;
+
+/**
+ * __useCreateEventMutation__
+ *
+ * To run a mutation, you first call `useCreateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEventMutation, { data, loading, error }] = useCreateEventMutation({
+ *   variables: {
+ *      addEventInput: // value for 'addEventInput'
+ *   },
+ * });
+ */
+export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<CreateEventMutation, CreateEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEventMutation, CreateEventMutationVariables>(CreateEventDocument, options);
+      }
+export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
 export const CreatePostDocument = gql`
     mutation createPost($createPostInput: CreatePostInput!) {
   createPost(createPostInput: $createPostInput) {

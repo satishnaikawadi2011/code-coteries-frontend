@@ -99,11 +99,11 @@ const CreatePostPage = () => {
 		setLoading(false);
 	};
 
-	useEffect(() => {
-		console.log(createPostData);
-	},[
-		createPostData
-	])
+	// useEffect(() => {
+	// 	console.log(createPostData);
+	// },[
+	// 	createPostData
+	// ])
 
 	const handleSubmit = async (values: any) => {
 		if (mode === 'preview') {

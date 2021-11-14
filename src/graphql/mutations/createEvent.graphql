@@ -1,0 +1,13 @@
+mutation createEvent($addEventInput: AddEventInput!) {
+	createEvent(addEventInput: $addEventInput) {
+		id
+		likeCount
+		title
+		description
+		image_url
+		event_url
+		event_date
+		created_at
+		updated_at
+	}
+}

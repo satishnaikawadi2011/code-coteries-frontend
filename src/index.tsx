@@ -5,13 +5,17 @@ import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
 import AppApolloProvider from './utils/ApolloProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 ReactDOM.render(
 	<React.StrictMode>
 		<AppApolloProvider>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<App />
+				<LocalizationProvider dateAdapter={AdapterDateFns}>
+					<App />
+				</LocalizationProvider>
 			</ThemeProvider>
 		</AppApolloProvider>
 	</React.StrictMode>,

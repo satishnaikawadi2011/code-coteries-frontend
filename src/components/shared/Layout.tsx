@@ -8,13 +8,20 @@ interface LayoutProps {
 	marginTop?: string | number;
 }
 
-const Layout: React.FC<LayoutProps> = ({ title, children, marginTop = 60 }) => {
+const Layout: React.FC<LayoutProps & React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>> = ({
+	title,
+	children,
+	marginTop = 60,
+	className,
+	style,
+	...props
+}) => {
 	const classes = useLayoutStyles();
 	return (
-		<section className={classes.section}>
+		<section className={`${classes.section}`}>
 			<SEO title={title} />
 			<Navbar />
-			<main className={classes.main} style={{ marginTop }}>
+			<main className={`${classes.main} ${className}`} style={{ marginTop, ...style }} {...props}>
 				<section className={classes.childrenWrapper}>
 					<div className={classes.children}>{children}</div>
 				</section>

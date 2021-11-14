@@ -30,6 +30,8 @@ Components:
 
 - /p/create  (create post page)
 
+- /e/add  (add event page)
+
 
 - notification
 
@@ -72,5 +74,9 @@ Components:
 
 - AppForm
 - AppFormField
+- AppFormSelectField
+- AppFormSelectMultiplrField
+- AppFormFieldWithEmoji
+- AppFormTextArea
 - AppFormSubmitButton
 - AppFormErrorMessage

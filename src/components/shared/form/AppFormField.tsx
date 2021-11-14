@@ -8,7 +8,7 @@ interface FormFieldProps {
 	fieldName: string;
 }
 
-const AppFormField: React.FC<FormFieldProps & TextFieldProps> = ({ className, fieldName, ...props }) => {
+const AppFormField: React.FC<FormFieldProps & TextFieldProps> = ({ className, fieldName, type, ...props }) => {
 	const { errors, touched, setFieldTouched, values, setFieldValue } = useFormikContext();
 	let formErrors: any = errors;
 	let formTouched: any = touched;
@@ -17,10 +17,18 @@ const AppFormField: React.FC<FormFieldProps & TextFieldProps> = ({ className, fi
 	return (
 		<div className={classes.fieldContainer}>
 			<TextField
-				onChange={(e) => setFieldValue(fieldName, e.target.value)}
+				onChange={(e: any) => {
+					if (type === 'file') {
+						setFieldValue(fieldName, e.target.files[0]);
+					}
+					else {
+						setFieldValue(fieldName, e.target.value);
+					}
+				}}
 				value={myValues[fieldName]}
 				onBlur={() => setFieldTouched(fieldName)}
 				className={`${classes.field} ${className}`}
+				type={type}
 				{...props}
 			/>
 			<AppErrorMessage errorMessage={formErrors[fieldName]} visible={formTouched[fieldName]} />
