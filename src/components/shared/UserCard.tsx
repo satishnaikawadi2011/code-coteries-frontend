@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Typography } from '@mui/material';
 import { useUserCardStyles } from 'src/styles/user-card';
+import { DEFAULT_USER_AVATAR } from 'src/constants';
 
 interface Props {
 	name: string;
@@ -11,13 +12,7 @@ interface Props {
 	location?: string;
 }
 
-const UserCard: React.FC<Props> = ({
-	name,
-	username,
-	image_url = 'https://res.cloudinary.com/dg2zkumuc/image/upload/v1597862391/slcwy3gm2gv6i3tn6n7d.png',
-	avatarSize = 44,
-	location
-}) => {
+const UserCard: React.FC<Props> = ({ name, username, image_url = DEFAULT_USER_AVATAR, avatarSize = 44, location }) => {
 	const classes = useUserCardStyles({ avatarSize });
 
 	return (

@@ -185,6 +185,7 @@ export type Mutation = {
   editExperience: Experience;
   editProfile: Profile;
   editSocial: Social;
+  editUserAvatar: Profile;
   followUser: User;
   likeComment: CommentResponse;
   likeEvent: Event;
@@ -246,6 +247,11 @@ export type MutationEditProfileArgs = {
 
 export type MutationEditSocialArgs = {
   editSocialInput: EditSocialInput;
+};
+
+
+export type MutationEditUserAvatarArgs = {
+  url: Scalars['String'];
 };
 
 
@@ -438,6 +444,20 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, created_at: any, caption: string, image_url: string, updated_at: any, likes: Array<string>, likeCount: number } };
 
+export type EditProfileMutationVariables = Exact<{
+  editProfileInput: EditProfileInput;
+}>;
+
+
+export type EditProfileMutation = { __typename?: 'Mutation', editProfile: { __typename?: 'Profile', id: string, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, bio?: string | null | undefined } };
+
+export type EditUserAvatarMutationVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+
+export type EditUserAvatarMutation = { __typename?: 'Mutation', editUserAvatar: { __typename?: 'Profile', id: string, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, bio?: string | null | undefined } };
+
 export type SigninUserMutationVariables = Exact<{
   signinUserInput: SigninUserInput;
 }>;
@@ -550,6 +570,84 @@ export function useCreatePostMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
 export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>;
 export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>;
+export const EditProfileDocument = gql`
+    mutation editProfile($editProfileInput: EditProfileInput!) {
+  editProfile(editProfileInput: $editProfileInput) {
+    id
+    website
+    company
+    location
+    github
+    image_url
+    bio
+  }
+}
+    `;
+export type EditProfileMutationFn = Apollo.MutationFunction<EditProfileMutation, EditProfileMutationVariables>;
+
+/**
+ * __useEditProfileMutation__
+ *
+ * To run a mutation, you first call `useEditProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editProfileMutation, { data, loading, error }] = useEditProfileMutation({
+ *   variables: {
+ *      editProfileInput: // value for 'editProfileInput'
+ *   },
+ * });
+ */
+export function useEditProfileMutation(baseOptions?: Apollo.MutationHookOptions<EditProfileMutation, EditProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(EditProfileDocument, options);
+      }
+export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>;
+export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>;
+export type EditProfileMutationOptions = Apollo.BaseMutationOptions<EditProfileMutation, EditProfileMutationVariables>;
+export const EditUserAvatarDocument = gql`
+    mutation editUserAvatar($url: String!) {
+  editUserAvatar(url: $url) {
+    id
+    website
+    company
+    location
+    github
+    image_url
+    bio
+  }
+}
+    `;
+export type EditUserAvatarMutationFn = Apollo.MutationFunction<EditUserAvatarMutation, EditUserAvatarMutationVariables>;
+
+/**
+ * __useEditUserAvatarMutation__
+ *
+ * To run a mutation, you first call `useEditUserAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditUserAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editUserAvatarMutation, { data, loading, error }] = useEditUserAvatarMutation({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useEditUserAvatarMutation(baseOptions?: Apollo.MutationHookOptions<EditUserAvatarMutation, EditUserAvatarMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditUserAvatarMutation, EditUserAvatarMutationVariables>(EditUserAvatarDocument, options);
+      }
+export type EditUserAvatarMutationHookResult = ReturnType<typeof useEditUserAvatarMutation>;
+export type EditUserAvatarMutationResult = Apollo.MutationResult<EditUserAvatarMutation>;
+export type EditUserAvatarMutationOptions = Apollo.BaseMutationOptions<EditUserAvatarMutation, EditUserAvatarMutationVariables>;
 export const SigninUserDocument = gql`
     mutation signinUser($signinUserInput: SigninUserInput!) {
   signinUser(signinUserInput: $signinUserInput) {

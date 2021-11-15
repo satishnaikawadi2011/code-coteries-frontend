@@ -5,12 +5,13 @@ interface AppFormProps {
 	initialValues: any;
 	validationSchema: any;
 	onSubmit: any;
+	className?: string;
 }
 
-const AppForm: React.FC<AppFormProps> = ({ initialValues, onSubmit, validationSchema, children }) => {
+const AppForm: React.FC<AppFormProps> = ({ initialValues, onSubmit, validationSchema, children, className }) => {
 	return (
 		<Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-			{() => <React.Fragment>{children}</React.Fragment>}
+			{() => <div className={className}>{children}</div>}
 		</Formik>
 	);
 };

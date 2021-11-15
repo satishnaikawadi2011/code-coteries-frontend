@@ -5,7 +5,7 @@ import Layout from 'src/components/shared/Layout';
 
 const NotFoundPage = () => {
 	return (
-		<Layout title="Not Found Page">
+		<Layout title="Not Found Page" minimalNavbar>
 			<Typography variant="h5" align="center" paragraph>
 				Sorry, this page isn't available.
 			</Typography>

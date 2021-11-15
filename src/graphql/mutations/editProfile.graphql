@@ -1,0 +1,11 @@
+mutation editProfile($editProfileInput: EditProfileInput!) {
+	editProfile(editProfileInput: $editProfileInput) {
+		id
+		website
+		company
+		location
+		github
+		image_url
+		bio
+	}
+}

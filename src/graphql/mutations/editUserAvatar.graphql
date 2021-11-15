@@ -1,0 +1,11 @@
+mutation editUserAvatar($url: String!) {
+	editUserAvatar(url: $url) {
+		id
+		website
+		company
+		location
+		github
+		image_url
+		bio
+	}
+}
