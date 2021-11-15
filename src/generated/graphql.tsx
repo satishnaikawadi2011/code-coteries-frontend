@@ -455,7 +455,7 @@ export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, likeCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, content: string }> | null | undefined }> };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: any, likes: Array<string>, likeCount: number, tags?: Array<{ __typename?: 'Tag', name: string, id: string }> | null | undefined, user: { __typename?: 'User', username: string, fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
 
 export type GetAllTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -626,12 +626,22 @@ export const GetAllPostsDocument = gql`
     query getAllPosts {
   getAllPosts {
     id
-    caption
-    likeCount
-    comments {
-      handle
-      content
+    tags {
+      name
+      id
     }
+    caption
+    image_url
+    created_at
+    user {
+      username
+      fullName
+      profile {
+        image_url
+      }
+    }
+    likes
+    likeCount
   }
 }
     `;

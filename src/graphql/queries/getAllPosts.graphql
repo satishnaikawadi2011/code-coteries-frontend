@@ -1,11 +1,21 @@
 query getAllPosts {
 	getAllPosts {
 		id
-		caption
-		likeCount
-		comments {
-			handle
-			content
+		tags {
+			name
+			id
 		}
+		caption
+		image_url
+		created_at
+		user {
+			username
+			fullName
+			profile {
+				image_url
+			}
+		}
+		likes
+		likeCount
 	}
 }
