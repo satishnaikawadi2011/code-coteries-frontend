@@ -16,12 +16,19 @@ const useDisplayError = (errors: (ApolloError | undefined)[]) => {
 		title: 'Oops...',
 		text: 'You are not authenticated to use this action , please login again !'
 	});
-                    } else {
+					} else if (e.graphQLErrors[0]?.extensions?.response?.statusCode === 400) {
+						MySwal.fire({
+		icon: 'error',
+		title: 'Oops...',
+							text: e.graphQLErrors[0]?.extensions?.response?.message[0]
+						});
+					} else {
                         MySwal.fire({
 		icon: 'error',
 		title: 'Oops...',
 		text: e.message
-	});
+						});
+						// console.log(e.graphQLErrors);
                     }
 				}
 			});

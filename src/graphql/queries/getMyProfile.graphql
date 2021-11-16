@@ -1,0 +1,11 @@
+query getMyProfile {
+	getMyProfile {
+		website
+		company
+		location
+		bio
+		github
+		image_url
+		id
+	}
+}

@@ -5,6 +5,7 @@ import LoadingScreen from 'src/components/shared/LoadingScreen';
 import { Drawer, Hidden, IconButton, List, ListItem, ListItemText, Menu, useMediaQuery } from '@mui/material';
 import Layout from 'src/components/shared/Layout';
 import EditUserInfo from 'src/components/edit-profile/EditUserInfo';
+import { useGetMyProfileQuery } from 'src/generated/graphql';
 
 const EditProfilePage = () => {
 	const history = useHistory();
@@ -12,7 +13,8 @@ const EditProfilePage = () => {
 	// 	const { currentUserId } = React.useContext(UserContext);
 	//   const variables = { id: currentUserId };
 	//   const { data, loading } = useQuery(GET_EDIT_USER_PROFILE, { variables });
-
+	const { data: profileData, loading: profileLoading } = useGetMyProfileQuery();
+	console.log(profileData)
 	const classes = useEditProfilePageStyles();
 	const path = history.location.pathname;
 	const [
@@ -20,9 +22,9 @@ const EditProfilePage = () => {
 		setDrawer
 	] = React.useState(false);
 
-	//   if (loading) {
-	//     return <LoadingScreen />;
-	//   }
+	if (profileLoading) {
+		return <LoadingScreen />;
+	}
 
 	function handleToggleDrawer() {
 		setDrawer((prev) => !prev);
@@ -113,7 +115,7 @@ const EditProfilePage = () => {
 						</Drawer>
 					</Hidden>
 				</nav>
-				<main>{path.includes('edit') && <EditUserInfo profile={null} />}</main>
+				<main>{path.includes('edit') && <EditUserInfo profile={profileData?.getMyProfile} />}</main>
 			</section>
 		</Layout>
 	);

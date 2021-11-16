@@ -14,7 +14,6 @@ interface ProfilePictureProps {
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ image, isOwner = true, size }) => {
 	const classes = useProfilePictureStyles({ size, isOwner });
-	const { user } = useAuthStore();
 	const inputRef: any = React.useRef();
 	const [
 		img,

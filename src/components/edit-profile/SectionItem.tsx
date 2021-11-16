@@ -1,4 +1,4 @@
-import { Hidden, Typography } from '@mui/material';
+import { Hidden, TextFieldProps, Typography } from '@mui/material';
 import React from 'react';
 import { useEditProfilePageStyles } from 'src/styles/edit-profile';
 import AppFormField from '../shared/form/AppFormField';
@@ -10,7 +10,13 @@ interface SectionItemProps {
 	inputRef?: any;
 }
 
-const SectionItem: React.FC<SectionItemProps> = ({ type = 'text', text, name, inputRef }) => {
+const SectionItem: React.FC<SectionItemProps & TextFieldProps> = ({
+	type = 'text',
+	text,
+	name,
+	inputRef,
+	...props
+}) => {
 	const classes = useEditProfilePageStyles();
 
 	return (
@@ -21,23 +27,24 @@ const SectionItem: React.FC<SectionItemProps> = ({ type = 'text', text, name, in
 						{text}
 					</Typography>
 				</Hidden>
-				<Hidden smUp>
+				{/* <Hidden smUp>
 					<Typography className={classes.typography}>{text}</Typography>
-				</Hidden>
+				</Hidden> */}
 			</aside>
-			<AppFormField
-				fieldName={name}
-				inputRef={inputRef}
-				// helperText={error?.type === name && error.message}
-				variant="outlined"
-				fullWidth
-				// defaultValue={formItem}
-				type={type}
-				className={classes.textField}
-				inputProps={{
-					className: classes.textFieldInput
-				}}
-			/>
+			<div style={{ width: '100%' }}>
+				<AppFormField
+					fieldName={name}
+					inputRef={inputRef}
+					variant="outlined"
+					fullWidth
+					type={type}
+					className={classes.textField}
+					inputProps={{
+						className: classes.textFieldInput
+					}}
+					{...props}
+				/>
+			</div>
 		</div>
 	);
 };

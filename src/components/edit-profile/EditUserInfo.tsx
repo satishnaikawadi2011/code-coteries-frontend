@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Slide, Snackbar, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { DEFAULT_USER_AVATAR } from 'src/constants';
 import { Profile, useEditProfileMutation, useEditUserAvatarMutation } from 'src/generated/graphql';
@@ -10,43 +10,53 @@ import AppFormField from '../shared/form/AppFormField';
 import AppFormSubmitButton from '../shared/form/AppFormSubmitButton';
 import ProfilePicture from '../shared/ProfilePicture';
 import SectionItem from './SectionItem';
+import * as Yup from 'yup'
+import useDisplayError from 'src/hooks/useDisplayError';
 
 interface EditUserInfoProps {
-	profile: Profile | null;
+	profile?: Profile | null;
 }
+
+
+const validationSchema = Yup.object({	bio:Yup.string(),
+		company:Yup.string(),
+		github:Yup.string(),
+		location:Yup.string(),
+		website:Yup.string(),
+		name: Yup.string(),
+		email:Yup.string(),
+		username: Yup.string()})
 
 const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 	const classes = useEditProfilePageStyles();
-	//   const { register, handleSubmit } = useForm({ mode: 'onBlur' });
-	//   const { updateEmail } = React.useContext(AuthContext);
-
 	const { user } = useAuthStore();
-
 	const initialValues = {
 		bio:
 
-				profile ? profile.bio :
+				profile && profile.bio  ? profile.bio :
 				'',
 		company:
 
-				profile ? profile.company :
+				profile && profile.company? profile.company :
 				'',
 		github:
 
-				profile ? profile.github :
+				profile && profile.github ? profile.github :
 				'',
 		location:
 
-				profile ? profile.location :
+				profile && profile.location ? profile.location :
 				'',
 		website:
 
-				profile ? profile.website :
+				profile && profile.website ? profile.website :
 				'',
 		name: user?.fullName,
 		email: user?.email,
 		username: user?.username
 	};
+
+	console.log(profile);
 
 	const [
 		profileImage,
@@ -57,39 +67,23 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 			DEFAULT_USER_AVATAR
 	);
 	const [
-		editProfile
+		editProfile,{loading:editProfileLoading,data:editProfileData,error:editProfileError}
 	] = useEditProfileMutation();
 	const [
-		editUserAvatar
+		editUserAvatar,{error:editUserAvatarError,loading:editUserAvatarLoading}
 	] = useEditUserAvatarMutation();
-	//   const [error, setError] = useState(DEFAULT_ERROR);
 	const [
 		open,
 		setOpen
 	] = useState(false);
 
-	//   async function onSubmit(data) {
-	//     try {
-	//       setError(DEFAULT_ERROR);
-	//       const variables = { ...data, id: user.id };
+	useDisplayError([editProfileError, editUserAvatarError]);
 
-	//       await updateEmail(data.email);
-
-	//       await editUser({ variables });
-	//       setOpen(true);
-	//     } catch (error) {
-	//       console.error('Erorr updating profile', error);
-	//       handleError(error);
-	//     }
-	//   }
-
-	//   function handleError(error) {
-	//     if (error.message.includes('users_username_key')) {
-	//       setError({ type: 'username', message: 'This username is already taken' });
-	//     } else if (error.code.includes('auth')) {
-	//       setError({ type: 'email', message: error.message });
-	//     }
-	// }
+	  async function handleSubmit(values:any) {
+		  const { location, github, company, website, bio, } = values;
+		  await editProfile({ variables: { editProfileInput: { bio:bio===''?null:bio, company:company===''?null:company, github:github===''?null:github, location:location===''?null:location, website:website===''?null:website } } });
+		  setOpen(true);
+	  }
 
 	const { upload } = useCloudinaryUpload();
 
@@ -99,6 +93,8 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 		await editUserAvatar({ variables: { url: cloudinaryData.url } });
 		setProfileImage(cloudinaryData.url);
 	}
+
+	const loading = editProfileLoading || editUserAvatarLoading;
 
 	return (
 		<section className={classes.container}>
@@ -120,9 +116,9 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 					</label>
 				</div>
 			</div>
-			<AppForm onSubmit={() => {}} className={classes.form} initialValues={initialValues} validationSchema={{}}>
-				<SectionItem name="name" text="Name" />
-				<SectionItem name="username" text="Username" />
+			<AppForm onSubmit={handleSubmit} className={classes.form} initialValues={initialValues} validationSchema={validationSchema}>
+				<SectionItem name="name" text="Name" disabled />
+				<SectionItem name="username" text="Username" disabled />
 				<SectionItem name="website" text="Website" />
 				<SectionItem name="company" text="Company" />
 				<SectionItem name="location" text="Location" />
@@ -130,12 +126,14 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 				<div className={classes.sectionItem}>
 					<aside>
 						<Typography
-						//   className={classes.bio}
+						  className={classes.typography}
 						>
 							Bio
 						</Typography>
 					</aside>
-					<AppFormField fieldName="bio" variant="outlined" multiline fullWidth rows={3} />
+					<div style={{width:'100%'}}>
+						<AppFormField fieldName="bio" variant="outlined" multiline fullWidth rows={3}/>
+					</div>
 				</div>
 				<div className={classes.sectionItem}>
 					<div />
@@ -143,7 +141,7 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 						Personal informantion
 					</Typography>
 				</div>
-				<SectionItem name="email" text="Email" type="email" />
+				<SectionItem name="email" text="Email" type="email" disabled />
 
 				<div className={classes.sectionItem}>
 					<div />
@@ -154,19 +152,19 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 						color="primary"
 						className={classes.justifySelfStart}
 						title="Submit"
+						disabled={loading}
 					/>
 				</div>
 			</AppForm>
-			{/* <Snackbar
+			<Snackbar
 	        open={open}
 	        autoHideDuration={6000}
 	        TransitionComponent={Slide}
 	        message={<span>Profile updated</span>}
 	        onClose={() => setOpen(false)}
-	      /> */}
+	      />
 		</section>
 	);
-	// return null;
 };
 
 export default EditUserInfo;

@@ -32,11 +32,12 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		if (data) {
-			const { token,user,__typename} = data.signinUser;
+			const { token, user, __typename } = data.signinUser;
+			console.log(data)
 			authStorage.set({ token, user, __typename });
             history.replace('/')
 		}
-	}, [data])
+	}, [data,history])
 	
 	if (isAuthenticated) {
 		return <Redirect to="/"/>
