@@ -1,0 +1,10 @@
+query getMySocial {
+	getMySocial {
+		youtube
+		facebook
+		instagram
+		twitter
+		linkedin
+		id
+	}
+}

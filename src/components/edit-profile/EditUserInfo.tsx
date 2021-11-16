@@ -56,7 +56,6 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 		username: user?.username
 	};
 
-	console.log(profile);
 
 	const [
 		profileImage,

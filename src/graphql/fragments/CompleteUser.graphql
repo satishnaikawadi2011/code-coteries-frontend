@@ -1,0 +1,43 @@
+fragment CompleteUser on User {
+	id
+	username
+	email
+	fullName
+	profile {
+		id
+		bio
+		website
+		company
+		location
+		github
+		image_url
+		experience {
+			id
+			title
+			company
+			from
+			to
+			location
+			current
+			description
+		}
+		social {
+			id
+			youtube
+			facebook
+			instagram
+			twitter
+			linkedin
+		}
+		education {
+			id
+			school
+			degree
+			from
+			to
+			current
+			description
+			field
+		}
+	}
+}

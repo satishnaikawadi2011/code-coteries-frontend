@@ -1,28 +1,42 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { useEditProfilePageStyles } from 'src/styles/edit-profile';
-import { useHistory } from 'react-router-dom';
 import LoadingScreen from 'src/components/shared/LoadingScreen';
-import { Drawer, Hidden, IconButton, List, ListItem, ListItemText, Menu, useMediaQuery } from '@mui/material';
+import { Drawer, Hidden, IconButton, List, ListItem, ListItemText, } from '@mui/material';
 import Layout from 'src/components/shared/Layout';
 import EditUserInfo from 'src/components/edit-profile/EditUserInfo';
-import { useGetMyProfileQuery } from 'src/generated/graphql';
+import { useGetMyProfileQuery, useMeQuery } from 'src/generated/graphql';
+import { Menu } from '@mui/icons-material';
+import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
+
+export type KeyType = 'profile' | 'education' | 'experience' | 'social' | 'apps-and-websites' | 'email-sms' | 'push-notifications' | 'privacy-security' | 'emails-from-code-coteries';
+export interface DrawerOptionType {
+	label: string;
+	key: KeyType;
+}
+
+	const options: DrawerOptionType[] = [
+		{label:'Edit Profile',key:'profile'},
+		{label:'Education Info',key:'education'},
+		{label:'Work Experience',key:'experience'},
+		{label:'Social Accounts',key:'social'},
+		{label:'Apps and Websites',key:'apps-and-websites'},
+		{label:'Email and SMS',key:'email-sms'},
+		{label:'Push Notifications',key:'push-notifications'},
+		{label:'Privacy and Security',key:'privacy-security'},
+		{label:'Emails from Code Coteries',key:'emails-from-code-coteries'}
+	] 
 
 const EditProfilePage = () => {
-	const history = useHistory();
-
-	// 	const { currentUserId } = React.useContext(UserContext);
-	//   const variables = { id: currentUserId };
-	//   const { data, loading } = useQuery(GET_EDIT_USER_PROFILE, { variables });
 	const { data: profileData, loading: profileLoading } = useGetMyProfileQuery();
-	console.log(profileData)
+	const {data:userData,loading:userLoading} = useMeQuery()
+	const [currentOption, setCurrentOption] = useState<KeyType>('profile');
 	const classes = useEditProfilePageStyles();
-	const path = history.location.pathname;
 	const [
 		showDrawer,
 		setDrawer
 	] = React.useState(false);
 
-	if (profileLoading) {
+	if (profileLoading || userLoading) {
 		return <LoadingScreen />;
 	}
 
@@ -30,51 +44,30 @@ const EditProfilePage = () => {
 		setDrawer((prev) => !prev);
 	}
 
-	function handleSelected(index: number) {
-		switch (index) {
-			case 0:
-				return path.includes('edit');
-			default:
-				break;
-		}
+	function handleSelected(option:DrawerOptionType) {
+		return currentOption === option.key;
 	}
 
-	function handleListClick(index: number) {
-		switch (index) {
-			case 0:
-				history.push('/accounts/edit');
-				break;
-			default:
-				break;
-		}
+	function handleListClick(option: DrawerOptionType) {
+		setCurrentOption(option.key);
 	}
 
-	const options = [
-		'Edit Profile',
-		'Change Password',
-		'Apps and Websites',
-		'Email and SMS',
-		'Push Notifications',
-		'Manage Contacts',
-		'Privacy and Security',
-		'Login Activity',
-		'Emails from Instagram'
-	];
+
 
 	const drawer = (
 		<List>
 			{options.map((option, index) => (
 				<ListItem
-					key={option}
+					key={option.key}
 					button
-					selected={handleSelected(index)}
-					onClick={() => handleListClick(index)}
+					selected={handleSelected(option)}
+					onClick={() => handleListClick(option)}
 					classes={{
 						selected: classes.listItemSelected,
 						button: classes.listItemButton
 					}}
 				>
-					<ListItemText primary={option} />
+					<ListItemText primary={option.label} />
 				</ListItem>
 			))}
 		</List>
@@ -84,7 +77,7 @@ const EditProfilePage = () => {
 		<Layout title="Edit Profile">
 			<section className={classes.section}>
 				<IconButton edge="start" onClick={handleToggleDrawer} className={classes.menuButton}>
-					{/* <Menu /> */}
+					<Menu />
 				</IconButton>
 				<nav>
 					<Hidden smUp implementation="css">
@@ -101,7 +94,6 @@ const EditProfilePage = () => {
 					<Hidden
 						xsDown
 						implementation="css"
-						// className={classes.permanentDrawerRoot}
 					>
 						<Drawer
 							variant="permanent"
@@ -115,7 +107,10 @@ const EditProfilePage = () => {
 						</Drawer>
 					</Hidden>
 				</nav>
-				<main>{path.includes('edit') && <EditUserInfo profile={profileData?.getMyProfile} />}</main>
+				<main>
+					{currentOption === 'profile' && <EditUserInfo profile={profileData?.getMyProfile} />}
+					{currentOption==='social' && <EditSocialLinks social={userData?.me.profile?.social} />}
+				</main>
 			</section>
 		</Layout>
 	);

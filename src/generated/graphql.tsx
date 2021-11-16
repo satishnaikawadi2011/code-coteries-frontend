@@ -350,6 +350,7 @@ export type Query = {
   getMyFollowers: Array<User>;
   getMyFollowings: Array<User>;
   getMyProfile: Profile;
+  getMySocial: Social;
   getPost: Post;
   getPostsByTag: Array<Post>;
   me: User;
@@ -429,6 +430,8 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type CompleteUserFragment = { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined };
+
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string };
 
 export type CreateEventMutationVariables = Exact<{
@@ -451,6 +454,13 @@ export type EditProfileMutationVariables = Exact<{
 
 
 export type EditProfileMutation = { __typename?: 'Mutation', editProfile: { __typename?: 'Profile', id: string, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, bio?: string | null | undefined } };
+
+export type EditSocialMutationVariables = Exact<{
+  editSocialInput: EditSocialInput;
+}>;
+
+
+export type EditSocialMutation = { __typename?: 'Mutation', editSocial: { __typename?: 'Social', id: string, youtube?: string | null | undefined, instagram?: string | null | undefined, facebook?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } };
 
 export type EditUserAvatarMutationVariables = Exact<{
   url: Scalars['String'];
@@ -488,6 +498,61 @@ export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetMyProfileQuery = { __typename?: 'Query', getMyProfile: { __typename?: 'Profile', website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, bio?: string | null | undefined, github?: string | null | undefined, image_url: string, id: string } };
 
+export type GetMySocialQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMySocialQuery = { __typename?: 'Query', getMySocial: { __typename?: 'Social', youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined, id: string } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined } };
+
+export const CompleteUserFragmentDoc = gql`
+    fragment CompleteUser on User {
+  id
+  username
+  email
+  fullName
+  profile {
+    id
+    bio
+    website
+    company
+    location
+    github
+    image_url
+    experience {
+      id
+      title
+      company
+      from
+      to
+      location
+      current
+      description
+    }
+    social {
+      id
+      youtube
+      facebook
+      instagram
+      twitter
+      linkedin
+    }
+    education {
+      id
+      school
+      degree
+      from
+      to
+      current
+      description
+      field
+    }
+  }
+}
+    `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -615,6 +680,44 @@ export function useEditProfileMutation(baseOptions?: Apollo.MutationHookOptions<
 export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>;
 export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>;
 export type EditProfileMutationOptions = Apollo.BaseMutationOptions<EditProfileMutation, EditProfileMutationVariables>;
+export const EditSocialDocument = gql`
+    mutation editSocial($editSocialInput: EditSocialInput!) {
+  editSocial(editSocialInput: $editSocialInput) {
+    id
+    youtube
+    instagram
+    facebook
+    twitter
+    linkedin
+  }
+}
+    `;
+export type EditSocialMutationFn = Apollo.MutationFunction<EditSocialMutation, EditSocialMutationVariables>;
+
+/**
+ * __useEditSocialMutation__
+ *
+ * To run a mutation, you first call `useEditSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditSocialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editSocialMutation, { data, loading, error }] = useEditSocialMutation({
+ *   variables: {
+ *      editSocialInput: // value for 'editSocialInput'
+ *   },
+ * });
+ */
+export function useEditSocialMutation(baseOptions?: Apollo.MutationHookOptions<EditSocialMutation, EditSocialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditSocialMutation, EditSocialMutationVariables>(EditSocialDocument, options);
+      }
+export type EditSocialMutationHookResult = ReturnType<typeof useEditSocialMutation>;
+export type EditSocialMutationResult = Apollo.MutationResult<EditSocialMutation>;
+export type EditSocialMutationOptions = Apollo.BaseMutationOptions<EditSocialMutation, EditSocialMutationVariables>;
 export const EditUserAvatarDocument = gql`
     mutation editUserAvatar($url: String!) {
   editUserAvatar(url: $url) {
@@ -854,3 +957,76 @@ export function useGetMyProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetMyProfileQueryHookResult = ReturnType<typeof useGetMyProfileQuery>;
 export type GetMyProfileLazyQueryHookResult = ReturnType<typeof useGetMyProfileLazyQuery>;
 export type GetMyProfileQueryResult = Apollo.QueryResult<GetMyProfileQuery, GetMyProfileQueryVariables>;
+export const GetMySocialDocument = gql`
+    query getMySocial {
+  getMySocial {
+    youtube
+    facebook
+    instagram
+    twitter
+    linkedin
+    id
+  }
+}
+    `;
+
+/**
+ * __useGetMySocialQuery__
+ *
+ * To run a query within a React component, call `useGetMySocialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMySocialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMySocialQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMySocialQuery(baseOptions?: Apollo.QueryHookOptions<GetMySocialQuery, GetMySocialQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMySocialQuery, GetMySocialQueryVariables>(GetMySocialDocument, options);
+      }
+export function useGetMySocialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMySocialQuery, GetMySocialQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMySocialQuery, GetMySocialQueryVariables>(GetMySocialDocument, options);
+        }
+export type GetMySocialQueryHookResult = ReturnType<typeof useGetMySocialQuery>;
+export type GetMySocialLazyQueryHookResult = ReturnType<typeof useGetMySocialLazyQuery>;
+export type GetMySocialQueryResult = Apollo.QueryResult<GetMySocialQuery, GetMySocialQueryVariables>;
+export const MeDocument = gql`
+    query me {
+  me {
+    ...CompleteUser
+  }
+}
+    ${CompleteUserFragmentDoc}`;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;

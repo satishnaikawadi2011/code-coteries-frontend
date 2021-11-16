@@ -1,0 +1,10 @@
+mutation editSocial($editSocialInput: EditSocialInput!) {
+	editSocial(editSocialInput: $editSocialInput) {
+		id
+		youtube
+		instagram
+		facebook
+		twitter
+		linkedin
+	}
+}
