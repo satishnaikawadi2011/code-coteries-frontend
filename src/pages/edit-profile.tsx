@@ -7,6 +7,7 @@ import EditUserInfo from 'src/components/edit-profile/EditUserInfo';
 import { useGetMyProfileQuery, useMeQuery } from 'src/generated/graphql';
 import { Menu } from '@mui/icons-material';
 import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
+import EditEducation from 'src/components/edit-profile/EditEducation';
 
 export type KeyType = 'profile' | 'education' | 'experience' | 'social' | 'apps-and-websites' | 'email-sms' | 'push-notifications' | 'privacy-security' | 'emails-from-code-coteries';
 export interface DrawerOptionType {
@@ -109,7 +110,8 @@ const EditProfilePage = () => {
 				</nav>
 				<main>
 					{currentOption === 'profile' && <EditUserInfo profile={profileData?.getMyProfile} />}
-					{currentOption==='social' && <EditSocialLinks social={userData?.me.profile?.social} />}
+					{currentOption === 'social' && <EditSocialLinks social={userData?.me.profile?.social} />}
+					{currentOption === 'education' && <EditEducation/>}
 				</main>
 			</section>
 		</Layout>

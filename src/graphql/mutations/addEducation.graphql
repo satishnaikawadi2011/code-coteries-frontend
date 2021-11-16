@@ -1,0 +1,12 @@
+mutation addEducation($addEducationInput: AddEducationInput!) {
+	addEducation(addEducationInput: $addEducationInput) {
+		id
+		school
+		degree
+		from
+		to
+		current
+		description
+		field
+	}
+}

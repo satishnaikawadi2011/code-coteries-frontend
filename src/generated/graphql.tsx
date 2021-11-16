@@ -434,6 +434,13 @@ export type CompleteUserFragment = { __typename?: 'User', id: string, username: 
 
 export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string };
 
+export type AddEducationMutationVariables = Exact<{
+  addEducationInput: AddEducationInput;
+}>;
+
+
+export type AddEducationMutation = { __typename?: 'Mutation', addEducation: { __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string } };
+
 export type CreateEventMutationVariables = Exact<{
   addEventInput: AddEventInput;
 }>;
@@ -561,6 +568,46 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const AddEducationDocument = gql`
+    mutation addEducation($addEducationInput: AddEducationInput!) {
+  addEducation(addEducationInput: $addEducationInput) {
+    id
+    school
+    degree
+    from
+    to
+    current
+    description
+    field
+  }
+}
+    `;
+export type AddEducationMutationFn = Apollo.MutationFunction<AddEducationMutation, AddEducationMutationVariables>;
+
+/**
+ * __useAddEducationMutation__
+ *
+ * To run a mutation, you first call `useAddEducationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddEducationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addEducationMutation, { data, loading, error }] = useAddEducationMutation({
+ *   variables: {
+ *      addEducationInput: // value for 'addEducationInput'
+ *   },
+ * });
+ */
+export function useAddEducationMutation(baseOptions?: Apollo.MutationHookOptions<AddEducationMutation, AddEducationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddEducationMutation, AddEducationMutationVariables>(AddEducationDocument, options);
+      }
+export type AddEducationMutationHookResult = ReturnType<typeof useAddEducationMutation>;
+export type AddEducationMutationResult = Apollo.MutationResult<AddEducationMutation>;
+export type AddEducationMutationOptions = Apollo.BaseMutationOptions<AddEducationMutation, AddEducationMutationVariables>;
 export const CreateEventDocument = gql`
     mutation createEvent($addEventInput: AddEventInput!) {
   createEvent(addEventInput: $addEventInput) {
