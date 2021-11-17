@@ -1,0 +1,12 @@
+mutation addExperience($addExperienceInput: AddExperienceInput!) {
+	addExperience(addExperienceInput: $addExperienceInput) {
+		id
+		title
+		company
+		location
+		from
+		to
+		current
+		description
+	}
+}

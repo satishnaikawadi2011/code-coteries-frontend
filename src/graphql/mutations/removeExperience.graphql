@@ -1,0 +1,3 @@
+mutation removeExperience($id: String!) {
+	removeExperience(id: $id)
+}

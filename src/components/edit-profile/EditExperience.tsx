@@ -5,19 +5,19 @@ import AppFormSubmitButton from '../shared/form/AppFormSubmitButton';
 import SectionItem from './SectionItem';
 import * as Yup from 'yup';
 import useDisplayError from 'src/hooks/useDisplayError';
-import { Education, useAddEducationMutation } from 'src/generated/graphql';
+import { Experience, useAddExperienceMutation } from 'src/generated/graphql';
 import AppFormField from '../shared/form/AppFormField';
 import AppDateTimePicker from '../shared/form/AppDateTimePicker';
 import AppSwitch from '../shared/form/AppSwitch';
 import { Formik } from 'formik';
 import { errorAlert } from 'src/utils/swal/errorAlert';
-import EducationItemsAccordion from './EducationItemsAccordion';
-import { addEducationItem } from 'src/utils/apollo-cache/me.query';
+import { addExperienceItem } from 'src/utils/apollo-cache/me.query';
+import ExperienceItemsAccordion from './ExperienceAccordion';
 
 interface FormValues {
-	field: string;
-	school: string;
-	degree: string;
+	title: string;
+	company: string;
+	location: string;
 	from: string;
 	to: string;
 	current: boolean;
@@ -25,12 +25,12 @@ interface FormValues {
 }
 
 const validationSchema = Yup.object({
-	field: Yup.string().required(),
-	school: Yup.string().required(),
-	degree: Yup.string().required(),
+	title: Yup.string().required(),
+	company: Yup.string().required(),
+	location: Yup.string().required(),
 	from:
 		Yup.string().required().test({
-			message: 'Please select the valid start date of education info!',
+			message: 'Please select the valid start date of your time at organization!',
 			test:
 				(date: any) => {
 					const today = new Date();
@@ -40,7 +40,7 @@ const validationSchema = Yup.object({
 		}),
 	to:
 		Yup.string().nullable(true).test({
-			message: 'Please select the valid end date of education info!',
+			message: 'Please select the valid end date of your time at organization!',
 			test:
 				(date: any) => {
 					const today = new Date();
@@ -54,24 +54,24 @@ const validationSchema = Yup.object({
 
 const initialValues: FormValues = {
 	current: true,
-	degree: '',
+	title: '',
 	description: '',
-	field: '',
-	school: '',
+	location: '',
+	company: '',
 	from: new Date().toISOString(),
 	to: null as any
 };
 
-interface EditEducationProps {
-	educationItems?: Education[];
+interface EditExperienceProps {
+	experienceItems?: Experience[];
 }
 
-const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) => {
+const EditExperience: React.FC<EditExperienceProps> = ({ experienceItems = [] }) => {
 	const classes = useEditProfilePageStyles();
 	const [
-		addEducation,
+		addExperience,
 		{ loading, error }
-	] = useAddEducationMutation();
+	] = useAddExperienceMutation();
 	const [
 		open,
 		setOpen
@@ -82,14 +82,14 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 	]);
 
 	async function handleSubmit(values: FormValues, actions: any) {
-		const { current, degree, description, field, from, school, to } = values;
+		const { current, description, from, to, company, location, title } = values;
 		if (!current && !to) {
-			errorAlert('Please mention the end date of education info!');
+			errorAlert('Please mention the end date of your time at organization!');
 			return;
 		}
-		await addEducation({
-			variables: { addEducationInput: { degree, description, field, from, school, current, to } },
-			update: addEducationItem
+		await addExperience({
+			variables: { addExperienceInput: { title, description, company, from, location, current, to } },
+			update: addExperienceItem
 		});
 		setOpen(true);
 		actions.resetForm();
@@ -98,15 +98,15 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 	return (
 		<section className={classes.container}>
 			<Typography variant="h5" style={{ textAlign: 'center', marginBottom: 20 }}>
-				Add Education Info
+				Add Work Experience Info
 			</Typography>
 			<Formik onSubmit={handleSubmit} initialValues={initialValues} validationSchema={validationSchema}>
 				{({ values }) => {
 					return (
 						<div className={classes.form}>
-							<SectionItem name="school" text="School" />
-							<SectionItem name="degree" text="Degree" />
-							<SectionItem name="field" text="Field" />
+							<SectionItem name="company" text="Organization" />
+							<SectionItem name="title" text="Working Role" />
+							<SectionItem name="location" text="Location" />
 							<div className={classes.sectionItem}>
 								<aside>
 									<Typography className={classes.typography}>Description</Typography>
@@ -149,7 +149,6 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 							)}
 							<div className={classes.sectionItem}>
 								<div />
-
 								<AppFormSubmitButton
 									type="submit"
 									variant="contained"
@@ -167,13 +166,13 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 				open={open}
 				autoHideDuration={6000}
 				TransitionComponent={Slide}
-				message={<span>Education Info added successfully !</span>}
+				message={<span>Experience Info added successfully !</span>}
 				onClose={() => setOpen(false)}
 			/>
 			<Divider />
-			<EducationItemsAccordion educationItems={educationItems} />
+			<ExperienceItemsAccordion experienceItems={experienceItems} />
 		</section>
 	);
 };
 
-export default EditEducation;
+export default EditExperience;

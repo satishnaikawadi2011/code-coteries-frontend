@@ -2,10 +2,13 @@ import { ApolloCache, DefaultContext, MutationUpdaterFunction } from '@apollo/cl
 import {
 	AddEducationInput,
 	AddEducationMutation,
+	AddExperienceInput,
+	AddExperienceMutation,
 	Exact,
 	MeDocument,
 	MeQuery,
-	RemoveEducationMutation
+	RemoveEducationMutation,
+	RemoveExperienceMutation
 } from 'src/generated/graphql';
 
 type AddEducationItemType =
@@ -22,6 +25,28 @@ type AddEducationItemType =
 type RemoveEducationItemType =
 	| MutationUpdaterFunction<
 			RemoveEducationMutation,
+			Exact<{
+				id: string;
+			}>,
+			DefaultContext,
+			ApolloCache<any>
+		>
+	| undefined;
+
+type AddExperienceItemType =
+	| MutationUpdaterFunction<
+			AddExperienceMutation,
+			Exact<{
+				addExperienceInput: AddExperienceInput;
+			}>,
+			DefaultContext,
+			ApolloCache<any>
+		>
+	| undefined;
+
+type RemoveExperienceItemType =
+	| MutationUpdaterFunction<
+			RemoveExperienceMutation,
 			Exact<{
 				id: string;
 			}>,
@@ -82,6 +107,64 @@ export const removeEducationItem: RemoveEducationItemType = (store, { data }) =>
 							{
 								...userData.me!.profile as any,
 								education: updatedEducationItems
+							}
+					}
+			}
+	});
+};
+
+export const addExperienceItem: AddExperienceItemType = (store, { data }) => {
+	// Get existing userdata
+	const userData = store.readQuery<MeQuery>({
+		query: MeDocument
+	})!;
+
+	const experienceItems = userData!.me.profile!.experience!;
+
+	store.writeQuery<MeQuery>({
+		query: MeDocument,
+		data:
+			{
+				...userData,
+				me:
+					{
+						...userData.me,
+						profile:
+							{
+								...userData.me!.profile as any,
+								education:
+									[
+										data!.addExperience,
+										...experienceItems
+									]
+							}
+					}
+			}
+	});
+};
+
+export const removeExperienceItem: RemoveExperienceItemType = (store, { data }) => {
+	// Get existing userdata
+	const userData = store.readQuery<MeQuery>({
+		query: MeDocument
+	})!;
+
+	const experienceItems = userData!.me.profile!.experience!;
+
+	const updatedExperienceItems = experienceItems.filter((e) => e.id !== data!.removeExperience);
+
+	store.writeQuery<MeQuery>({
+		query: MeDocument,
+		data:
+			{
+				...userData,
+				me:
+					{
+						...userData.me,
+						profile:
+							{
+								...userData.me!.profile as any,
+								experience: updatedExperienceItems
 							}
 					}
 			}

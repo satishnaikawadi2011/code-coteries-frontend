@@ -4,10 +4,11 @@ import LoadingScreen from 'src/components/shared/LoadingScreen';
 import { Drawer, Hidden, IconButton, List, ListItem, ListItemText, } from '@mui/material';
 import Layout from 'src/components/shared/Layout';
 import EditUserInfo from 'src/components/edit-profile/EditUserInfo';
-import { useGetMyProfileQuery, useMeQuery,Education } from 'src/generated/graphql';
+import { useGetMyProfileQuery, useMeQuery,Education, Experience } from 'src/generated/graphql';
 import { Menu } from '@mui/icons-material';
 import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
 import EditEducation from 'src/components/edit-profile/EditEducation';
+import EditExperience from 'src/components/edit-profile/EditExperience';
 
 export type KeyType = 'profile' | 'education' | 'experience' | 'social' | 'apps-and-websites' | 'email-sms' | 'push-notifications' | 'privacy-security' | 'emails-from-code-coteries';
 export interface DrawerOptionType {
@@ -111,7 +112,8 @@ const EditProfilePage = () => {
 				<main>
 					{currentOption === 'profile' && <EditUserInfo profile={profileData?.getMyProfile} />}
 					{currentOption === 'social' && <EditSocialLinks social={userData?.me.profile?.social} />}
-					{currentOption === 'education' && <EditEducation educationItems={userData?.me.profile?.education as Education[]}/>}
+					{currentOption === 'education' && <EditEducation educationItems={userData?.me.profile?.education as Education[]} />}
+					{currentOption === 'experience' && <EditExperience experienceItems={userData?.me.profile?.experience as Experience[]}/>}
 				</main>
 			</section>
 		</Layout>

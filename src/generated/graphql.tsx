@@ -441,6 +441,13 @@ export type AddEducationMutationVariables = Exact<{
 
 export type AddEducationMutation = { __typename?: 'Mutation', addEducation: { __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string } };
 
+export type AddExperienceMutationVariables = Exact<{
+  addExperienceInput: AddExperienceInput;
+}>;
+
+
+export type AddExperienceMutation = { __typename?: 'Mutation', addExperience: { __typename?: 'Experience', id: string, title: string, company: string, location: string, from: any, to?: any | null | undefined, current: boolean, description: string } };
+
 export type CreateEventMutationVariables = Exact<{
   addEventInput: AddEventInput;
 }>;
@@ -496,6 +503,13 @@ export type RemoveEducationMutationVariables = Exact<{
 
 
 export type RemoveEducationMutation = { __typename?: 'Mutation', removeEducation: string };
+
+export type RemoveExperienceMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveExperienceMutation = { __typename?: 'Mutation', removeExperience: string };
 
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -615,6 +629,46 @@ export function useAddEducationMutation(baseOptions?: Apollo.MutationHookOptions
 export type AddEducationMutationHookResult = ReturnType<typeof useAddEducationMutation>;
 export type AddEducationMutationResult = Apollo.MutationResult<AddEducationMutation>;
 export type AddEducationMutationOptions = Apollo.BaseMutationOptions<AddEducationMutation, AddEducationMutationVariables>;
+export const AddExperienceDocument = gql`
+    mutation addExperience($addExperienceInput: AddExperienceInput!) {
+  addExperience(addExperienceInput: $addExperienceInput) {
+    id
+    title
+    company
+    location
+    from
+    to
+    current
+    description
+  }
+}
+    `;
+export type AddExperienceMutationFn = Apollo.MutationFunction<AddExperienceMutation, AddExperienceMutationVariables>;
+
+/**
+ * __useAddExperienceMutation__
+ *
+ * To run a mutation, you first call `useAddExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addExperienceMutation, { data, loading, error }] = useAddExperienceMutation({
+ *   variables: {
+ *      addExperienceInput: // value for 'addExperienceInput'
+ *   },
+ * });
+ */
+export function useAddExperienceMutation(baseOptions?: Apollo.MutationHookOptions<AddExperienceMutation, AddExperienceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddExperienceMutation, AddExperienceMutationVariables>(AddExperienceDocument, options);
+      }
+export type AddExperienceMutationHookResult = ReturnType<typeof useAddExperienceMutation>;
+export type AddExperienceMutationResult = Apollo.MutationResult<AddExperienceMutation>;
+export type AddExperienceMutationOptions = Apollo.BaseMutationOptions<AddExperienceMutation, AddExperienceMutationVariables>;
 export const CreateEventDocument = gql`
     mutation createEvent($addEventInput: AddEventInput!) {
   createEvent(addEventInput: $addEventInput) {
@@ -914,6 +968,37 @@ export function useRemoveEducationMutation(baseOptions?: Apollo.MutationHookOpti
 export type RemoveEducationMutationHookResult = ReturnType<typeof useRemoveEducationMutation>;
 export type RemoveEducationMutationResult = Apollo.MutationResult<RemoveEducationMutation>;
 export type RemoveEducationMutationOptions = Apollo.BaseMutationOptions<RemoveEducationMutation, RemoveEducationMutationVariables>;
+export const RemoveExperienceDocument = gql`
+    mutation removeExperience($id: String!) {
+  removeExperience(id: $id)
+}
+    `;
+export type RemoveExperienceMutationFn = Apollo.MutationFunction<RemoveExperienceMutation, RemoveExperienceMutationVariables>;
+
+/**
+ * __useRemoveExperienceMutation__
+ *
+ * To run a mutation, you first call `useRemoveExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeExperienceMutation, { data, loading, error }] = useRemoveExperienceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveExperienceMutation(baseOptions?: Apollo.MutationHookOptions<RemoveExperienceMutation, RemoveExperienceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveExperienceMutation, RemoveExperienceMutationVariables>(RemoveExperienceDocument, options);
+      }
+export type RemoveExperienceMutationHookResult = ReturnType<typeof useRemoveExperienceMutation>;
+export type RemoveExperienceMutationResult = Apollo.MutationResult<RemoveExperienceMutation>;
+export type RemoveExperienceMutationOptions = Apollo.BaseMutationOptions<RemoveExperienceMutation, RemoveExperienceMutationVariables>;
 export const GetAllPostsDocument = gql`
     query getAllPosts {
   getAllPosts {
