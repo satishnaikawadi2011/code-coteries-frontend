@@ -1,4 +1,4 @@
-import { Slide, Snackbar, Typography } from '@mui/material';
+import { Divider, Slide, Snackbar, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useEditProfilePageStyles } from 'src/styles/edit-profile';
 import AppFormSubmitButton from '../shared/form/AppFormSubmitButton';
@@ -11,7 +11,8 @@ import AppDateTimePicker from '../shared/form/AppDateTimePicker';
 import AppSwitch from '../shared/form/AppSwitch';
 import { Formik } from 'formik';
 import { errorAlert } from 'src/utils/swal/errorAlert';
-import EducationItem from './EducationItem';
+import EducationItemsAccordion from './EducationItemsAccordion';
+import { addEducationItem } from 'src/utils/apollo-cache/me.query';
 
 interface FormValues {
 	field: string;
@@ -69,7 +70,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 	const classes = useEditProfilePageStyles();
 	const [
 		addEducation,
-		{ loading, data: newEducationItem, error }
+		{ loading, error }
 	] = useAddEducationMutation();
 	const [
 		open,
@@ -87,7 +88,8 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 			return;
 		}
 		await addEducation({
-			variables: { addEducationInput: { degree, description, field, from, school, current, to } }
+			variables: { addEducationInput: { degree, description, field, from, school, current, to } },
+			update: addEducationItem
 		});
 		setOpen(true);
 		actions.resetForm();
@@ -168,7 +170,8 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 				message={<span>Social Links updated</span>}
 				onClose={() => setOpen(false)}
 			/>
-			<EducationItem educationItem={educationItems[0]} />
+			<Divider />
+			<EducationItemsAccordion educationItems={educationItems} />
 		</section>
 	);
 };
