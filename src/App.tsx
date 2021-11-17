@@ -14,6 +14,7 @@ import authStorage from './utils/storage/auth';
 import { useAuthStore } from './store/auth';
 import ProtectedRoute from './utils/ProtectedRoute';
 import AddEventPage from './pages/add-event';
+import EducationItem from './components/edit-profile/EducationItem';
 
 function App() {
 	const { setToken, setUser } = useAuthStore();

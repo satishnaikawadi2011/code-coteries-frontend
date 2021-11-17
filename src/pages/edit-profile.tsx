@@ -4,7 +4,7 @@ import LoadingScreen from 'src/components/shared/LoadingScreen';
 import { Drawer, Hidden, IconButton, List, ListItem, ListItemText, } from '@mui/material';
 import Layout from 'src/components/shared/Layout';
 import EditUserInfo from 'src/components/edit-profile/EditUserInfo';
-import { useGetMyProfileQuery, useMeQuery } from 'src/generated/graphql';
+import { useGetMyProfileQuery, useMeQuery,Education } from 'src/generated/graphql';
 import { Menu } from '@mui/icons-material';
 import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
 import EditEducation from 'src/components/edit-profile/EditEducation';
@@ -111,7 +111,7 @@ const EditProfilePage = () => {
 				<main>
 					{currentOption === 'profile' && <EditUserInfo profile={profileData?.getMyProfile} />}
 					{currentOption === 'social' && <EditSocialLinks social={userData?.me.profile?.social} />}
-					{currentOption === 'education' && <EditEducation/>}
+					{currentOption === 'education' && <EditEducation educationItems={userData?.me.profile?.education as Education[]}/>}
 				</main>
 			</section>
 		</Layout>

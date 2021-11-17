@@ -11,6 +11,7 @@ import AppDateTimePicker from '../shared/form/AppDateTimePicker';
 import AppSwitch from '../shared/form/AppSwitch';
 import { Formik } from 'formik';
 import { errorAlert } from 'src/utils/swal/errorAlert';
+import EducationItem from './EducationItem';
 
 interface FormValues {
 	field: string;
@@ -79,7 +80,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 		error
 	]);
 
-	async function handleSubmit(values: FormValues) {
+	async function handleSubmit(values: FormValues, actions: any) {
 		const { current, degree, description, field, from, school, to } = values;
 		if (!current && !to) {
 			errorAlert('Please mention the end date of education info!');
@@ -89,6 +90,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 			variables: { addEducationInput: { degree, description, field, from, school, current, to } }
 		});
 		setOpen(true);
+		actions.resetForm();
 	}
 
 	return (
@@ -166,6 +168,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationItems = [] }) =>
 				message={<span>Social Links updated</span>}
 				onClose={() => setOpen(false)}
 			/>
+			<EducationItem educationItem={educationItems[0]} />
 		</section>
 	);
 };
