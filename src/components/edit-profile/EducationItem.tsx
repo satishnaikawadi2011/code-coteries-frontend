@@ -1,10 +1,13 @@
 import React from 'react';
-import { Education } from 'src/generated/graphql';
+import { Education, useRemoveEducationMutation } from 'src/generated/graphql';
 import classes from '../../styles/css/education-item.module.css';
 import { format } from 'date-fns';
 import { Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { confirmAlert } from 'src/utils/swal/confirmAlert';
+import useDisplayError from 'src/hooks/useDisplayError';
+import { removeEducationItem } from 'src/utils/apollo-cache/me.query';
 
 interface EducationItemProps {
 	educationItem: Education;
@@ -12,12 +15,30 @@ interface EducationItemProps {
 }
 
 const EducationItem: React.FC<EducationItemProps> = ({ educationItem, withActions = false }) => {
-	const { current, degree, description, field, from, to, school } = educationItem;
+	const { current, degree, description, field, from, to, school, id } = educationItem;
 	const startTime = format(new Date(from), 'do LLLL uuuu');
 	const endTime =
 		current ? 'Now' :
 		format(new Date(to), 'do LLLL uuuu');
 	const timePeriod = `${startTime} To ${endTime}`;
+
+	const [
+		removeEducation,
+		{ error, loading }
+	] = useRemoveEducationMutation();
+
+	useDisplayError([
+		error
+	]);
+
+	const handleRemove = async () => {
+		const { isConfirmed } = await confirmAlert();
+		if (isConfirmed) {
+			await removeEducation({ variables: { id }, update: removeEducationItem });
+		}
+	};
+
+	const handleEdit = () => {};
 
 	return (
 		<React.Fragment>
@@ -60,6 +81,8 @@ const EducationItem: React.FC<EducationItemProps> = ({ educationItem, withAction
 								variant="contained"
 								color="error"
 								startIcon={<DeleteIcon />}
+								onClick={handleRemove}
+								disabled={loading}
 							>
 								Remove
 							</Button>
@@ -68,6 +91,8 @@ const EducationItem: React.FC<EducationItemProps> = ({ educationItem, withAction
 								variant="contained"
 								color="info"
 								startIcon={<EditIcon />}
+								onClick={handleEdit}
+								disabled={loading}
 							>
 								Edit
 							</Button>

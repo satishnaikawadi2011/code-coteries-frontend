@@ -490,6 +490,13 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string } } };
 
+export type RemoveEducationMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveEducationMutation = { __typename?: 'Mutation', removeEducation: string };
+
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -876,6 +883,37 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const RemoveEducationDocument = gql`
+    mutation removeEducation($id: String!) {
+  removeEducation(id: $id)
+}
+    `;
+export type RemoveEducationMutationFn = Apollo.MutationFunction<RemoveEducationMutation, RemoveEducationMutationVariables>;
+
+/**
+ * __useRemoveEducationMutation__
+ *
+ * To run a mutation, you first call `useRemoveEducationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveEducationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeEducationMutation, { data, loading, error }] = useRemoveEducationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveEducationMutation(baseOptions?: Apollo.MutationHookOptions<RemoveEducationMutation, RemoveEducationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveEducationMutation, RemoveEducationMutationVariables>(RemoveEducationDocument, options);
+      }
+export type RemoveEducationMutationHookResult = ReturnType<typeof useRemoveEducationMutation>;
+export type RemoveEducationMutationResult = Apollo.MutationResult<RemoveEducationMutation>;
+export type RemoveEducationMutationOptions = Apollo.BaseMutationOptions<RemoveEducationMutation, RemoveEducationMutationVariables>;
 export const GetAllPostsDocument = gql`
     query getAllPosts {
   getAllPosts {
