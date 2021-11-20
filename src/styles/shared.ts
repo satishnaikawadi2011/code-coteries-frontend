@@ -80,3 +80,21 @@ export const useFollowSuggestionsStyles = makeStyles((theme: Theme) => ({
 				}
 		}
 }));
+
+export const useOptionsDialogStyles = makeStyles((theme: Theme) => ({
+	dialogScrollPaper:
+		{
+			display: 'grid !important' as any,
+			gridTemplateColumns: 'minmax(auto, 496px) !important' as any
+		},
+	button:
+		{
+			padding: '12px 8px !important' as any
+		},
+	redButton:
+		{
+			color: `${theme.palette.error.main} !important` as any,
+			padding: '12px 8px !important' as any,
+			fontWeight: 'bold !important' as any
+		}
+}));
