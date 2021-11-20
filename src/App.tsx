@@ -14,7 +14,8 @@ import authStorage from './utils/storage/auth';
 import { useAuthStore } from './store/auth';
 import ProtectedRoute from './utils/ProtectedRoute';
 import AddEventPage from './pages/add-event';
-import EducationItem from './components/edit-profile/EducationItem';
+import { useGetMyFollowersLazyQuery, useGetMyFollowingsLazyQuery } from './generated/graphql';
+import LoadingScreen from './components/shared/LoadingScreen';
 
 function App() {
 	const { setToken, setUser } = useAuthStore();
@@ -24,8 +25,23 @@ function App() {
 		if (authData) {
 			setToken(authData.token);
 			setUser(authData.user);
+			getFollowers();
+			getFollowings();
 		}
 	}, []);
+
+	const [
+		getFollowers,
+		{ loading: l1 }
+	] = useGetMyFollowersLazyQuery();
+	const [
+		getFollowings,
+		{ loading: l2 }
+	] = useGetMyFollowingsLazyQuery();
+
+	if (l1 || l2) {
+		return <LoadingScreen />;
+	}
 
 	return (
 		<Router>

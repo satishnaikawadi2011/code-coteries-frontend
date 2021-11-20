@@ -1,0 +1,12 @@
+query getMyFollowings {
+	getMyFollowings {
+		id
+		username
+		fullName
+		profile {
+			image_url
+		}
+		created_at
+		email
+	}
+}

@@ -354,6 +354,7 @@ export type Query = {
   getPost: Post;
   getPostsByTag: Array<Post>;
   me: User;
+  suggestUsers: Array<User>;
 };
 
 
@@ -382,6 +383,11 @@ export type QueryGetPostsByTagArgs = {
   tagId: Scalars['String'];
 };
 
+
+export type QuerySuggestUsersArgs = {
+  suggestUsersInput: SuggestUsersInput;
+};
+
 export type SigninUserInput = {
   password: Scalars['String'];
   username: Scalars['String'];
@@ -395,6 +401,12 @@ export type Social = {
   linkedin?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   youtube?: Maybe<Scalars['String']>;
+};
+
+export type SuggestUsersInput = {
+  created_at: Scalars['String'];
+  followerIds?: Maybe<Array<Scalars['String']>>;
+  limit?: Maybe<Scalars['Int']>;
 };
 
 export type Tag = {
@@ -483,6 +495,13 @@ export type EditUserAvatarMutationVariables = Exact<{
 
 export type EditUserAvatarMutation = { __typename?: 'Mutation', editUserAvatar: { __typename?: 'Profile', id: string, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, bio?: string | null | undefined } };
 
+export type FollowUserMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type FollowUserMutation = { __typename?: 'Mutation', followUser: { __typename?: 'User', id: string, username: string, email: string, fullName: string, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } };
+
 export type SigninUserMutationVariables = Exact<{
   signinUserInput: SigninUserInput;
 }>;
@@ -511,6 +530,13 @@ export type RemoveExperienceMutationVariables = Exact<{
 
 export type RemoveExperienceMutation = { __typename?: 'Mutation', removeExperience: string };
 
+export type UnfollowUserMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type UnfollowUserMutation = { __typename?: 'Mutation', unfollowUser: string };
+
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -520,6 +546,16 @@ export type GetAllTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllTagsQuery = { __typename?: 'Query', getAllTags: Array<{ __typename?: 'Tag', id: string, name: string, description: string, likes: Array<string>, likesCount: number }> };
+
+export type GetMyFollowersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMyFollowersQuery = { __typename?: 'Query', getMyFollowers: Array<{ __typename?: 'User', id: string, username: string, fullName: string, created_at: any, email: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined }> };
+
+export type GetMyFollowingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMyFollowingsQuery = { __typename?: 'Query', getMyFollowings: Array<{ __typename?: 'User', id: string, username: string, fullName: string, created_at: any, email: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined }> };
 
 export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -865,6 +901,46 @@ export function useEditUserAvatarMutation(baseOptions?: Apollo.MutationHookOptio
 export type EditUserAvatarMutationHookResult = ReturnType<typeof useEditUserAvatarMutation>;
 export type EditUserAvatarMutationResult = Apollo.MutationResult<EditUserAvatarMutation>;
 export type EditUserAvatarMutationOptions = Apollo.BaseMutationOptions<EditUserAvatarMutation, EditUserAvatarMutationVariables>;
+export const FollowUserDocument = gql`
+    mutation followUser($id: String!) {
+  followUser(id: $id) {
+    id
+    username
+    email
+    fullName
+    created_at
+    profile {
+      image_url
+    }
+  }
+}
+    `;
+export type FollowUserMutationFn = Apollo.MutationFunction<FollowUserMutation, FollowUserMutationVariables>;
+
+/**
+ * __useFollowUserMutation__
+ *
+ * To run a mutation, you first call `useFollowUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followUserMutation, { data, loading, error }] = useFollowUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFollowUserMutation(baseOptions?: Apollo.MutationHookOptions<FollowUserMutation, FollowUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowUserMutation, FollowUserMutationVariables>(FollowUserDocument, options);
+      }
+export type FollowUserMutationHookResult = ReturnType<typeof useFollowUserMutation>;
+export type FollowUserMutationResult = Apollo.MutationResult<FollowUserMutation>;
+export type FollowUserMutationOptions = Apollo.BaseMutationOptions<FollowUserMutation, FollowUserMutationVariables>;
 export const SigninUserDocument = gql`
     mutation signinUser($signinUserInput: SigninUserInput!) {
   signinUser(signinUserInput: $signinUserInput) {
@@ -999,6 +1075,37 @@ export function useRemoveExperienceMutation(baseOptions?: Apollo.MutationHookOpt
 export type RemoveExperienceMutationHookResult = ReturnType<typeof useRemoveExperienceMutation>;
 export type RemoveExperienceMutationResult = Apollo.MutationResult<RemoveExperienceMutation>;
 export type RemoveExperienceMutationOptions = Apollo.BaseMutationOptions<RemoveExperienceMutation, RemoveExperienceMutationVariables>;
+export const UnfollowUserDocument = gql`
+    mutation unfollowUser($id: String!) {
+  unfollowUser(id: $id)
+}
+    `;
+export type UnfollowUserMutationFn = Apollo.MutationFunction<UnfollowUserMutation, UnfollowUserMutationVariables>;
+
+/**
+ * __useUnfollowUserMutation__
+ *
+ * To run a mutation, you first call `useUnfollowUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnfollowUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unfollowUserMutation, { data, loading, error }] = useUnfollowUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUnfollowUserMutation(baseOptions?: Apollo.MutationHookOptions<UnfollowUserMutation, UnfollowUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnfollowUserMutation, UnfollowUserMutationVariables>(UnfollowUserDocument, options);
+      }
+export type UnfollowUserMutationHookResult = ReturnType<typeof useUnfollowUserMutation>;
+export type UnfollowUserMutationResult = Apollo.MutationResult<UnfollowUserMutation>;
+export type UnfollowUserMutationOptions = Apollo.BaseMutationOptions<UnfollowUserMutation, UnfollowUserMutationVariables>;
 export const GetAllPostsDocument = gql`
     query getAllPosts {
   getAllPosts {
@@ -1087,6 +1194,88 @@ export function useGetAllTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllTagsQueryHookResult = ReturnType<typeof useGetAllTagsQuery>;
 export type GetAllTagsLazyQueryHookResult = ReturnType<typeof useGetAllTagsLazyQuery>;
 export type GetAllTagsQueryResult = Apollo.QueryResult<GetAllTagsQuery, GetAllTagsQueryVariables>;
+export const GetMyFollowersDocument = gql`
+    query getMyFollowers {
+  getMyFollowers {
+    id
+    username
+    fullName
+    profile {
+      image_url
+    }
+    created_at
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetMyFollowersQuery__
+ *
+ * To run a query within a React component, call `useGetMyFollowersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyFollowersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyFollowersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMyFollowersQuery(baseOptions?: Apollo.QueryHookOptions<GetMyFollowersQuery, GetMyFollowersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyFollowersQuery, GetMyFollowersQueryVariables>(GetMyFollowersDocument, options);
+      }
+export function useGetMyFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyFollowersQuery, GetMyFollowersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyFollowersQuery, GetMyFollowersQueryVariables>(GetMyFollowersDocument, options);
+        }
+export type GetMyFollowersQueryHookResult = ReturnType<typeof useGetMyFollowersQuery>;
+export type GetMyFollowersLazyQueryHookResult = ReturnType<typeof useGetMyFollowersLazyQuery>;
+export type GetMyFollowersQueryResult = Apollo.QueryResult<GetMyFollowersQuery, GetMyFollowersQueryVariables>;
+export const GetMyFollowingsDocument = gql`
+    query getMyFollowings {
+  getMyFollowings {
+    id
+    username
+    fullName
+    profile {
+      image_url
+    }
+    created_at
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetMyFollowingsQuery__
+ *
+ * To run a query within a React component, call `useGetMyFollowingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyFollowingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyFollowingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMyFollowingsQuery(baseOptions?: Apollo.QueryHookOptions<GetMyFollowingsQuery, GetMyFollowingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyFollowingsQuery, GetMyFollowingsQueryVariables>(GetMyFollowingsDocument, options);
+      }
+export function useGetMyFollowingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyFollowingsQuery, GetMyFollowingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyFollowingsQuery, GetMyFollowingsQueryVariables>(GetMyFollowingsDocument, options);
+        }
+export type GetMyFollowingsQueryHookResult = ReturnType<typeof useGetMyFollowingsQuery>;
+export type GetMyFollowingsLazyQueryHookResult = ReturnType<typeof useGetMyFollowingsLazyQuery>;
+export type GetMyFollowingsQueryResult = Apollo.QueryResult<GetMyFollowingsQuery, GetMyFollowingsQueryVariables>;
 export const GetMyProfileDocument = gql`
     query getMyProfile {
   getMyProfile {

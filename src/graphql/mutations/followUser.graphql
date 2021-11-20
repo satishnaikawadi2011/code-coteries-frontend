@@ -1,0 +1,12 @@
+mutation followUser($id: String!) {
+	followUser(id: $id) {
+		id
+		username
+		email
+		fullName
+		created_at
+		profile {
+			image_url
+		}
+	}
+}

@@ -9,6 +9,8 @@ import { Menu } from '@mui/icons-material';
 import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
 import EditEducation from 'src/components/edit-profile/EditEducation';
 import EditExperience from 'src/components/edit-profile/EditExperience';
+import WorkInProgressAnimation from 'src/animations/components/WorkInProgress';
+import ComingSoonAnimation from 'src/animations/components/ComingSoon';
 
 export type KeyType = 'profile' | 'education' | 'experience' | 'social' | 'apps-and-websites' | 'email-sms' | 'push-notifications' | 'privacy-security' | 'emails-from-code-coteries';
 export interface DrawerOptionType {
@@ -113,7 +115,12 @@ const EditProfilePage = () => {
 					{currentOption === 'profile' && <EditUserInfo profile={profileData?.getMyProfile} />}
 					{currentOption === 'social' && <EditSocialLinks social={userData?.me.profile?.social} />}
 					{currentOption === 'education' && <EditEducation educationItems={userData?.me.profile?.education as Education[]} />}
-					{currentOption === 'experience' && <EditExperience experienceItems={userData?.me.profile?.experience as Experience[]}/>}
+					{currentOption === 'experience' && <EditExperience experienceItems={userData?.me.profile?.experience as Experience[]} />}
+					{currentOption !== 'profile' && currentOption !== 'social' && currentOption !== 'education' && currentOption !== 'experience' &&
+						<section className={classes.container} style={{width:'100%'}}>
+						<WorkInProgressAnimation />
+					</section>
+					}
 				</main>
 			</section>
 		</Layout>
