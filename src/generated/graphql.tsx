@@ -444,7 +444,7 @@ export type User = {
 
 export type CompleteUserFragment = { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined };
 
-export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string };
+export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any };
 
 export type AddEducationMutationVariables = Exact<{
   addEducationInput: AddEducationInput;
@@ -507,14 +507,14 @@ export type SigninUserMutationVariables = Exact<{
 }>;
 
 
-export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string } } };
+export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any } } };
 
 export type RegisterUserMutationVariables = Exact<{
   createUserInput: CreateUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string } } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any } } };
 
 export type RemoveEducationMutationVariables = Exact<{
   id: Scalars['String'];
@@ -572,6 +572,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined } };
 
+export type SuggestUsersQueryVariables = Exact<{
+  suggestUsersInput: SuggestUsersInput;
+}>;
+
+
+export type SuggestUsersQuery = { __typename?: 'Query', suggestUsers: Array<{ __typename?: 'User', id: string, username: string, email: string, fullName: string, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined }> };
+
 export const CompleteUserFragmentDoc = gql`
     fragment CompleteUser on User {
   id
@@ -623,6 +630,7 @@ export const RegularUserFragmentDoc = gql`
   username
   fullName
   email
+  created_at
 }
     `;
 export const AddEducationDocument = gql`
@@ -1389,3 +1397,45 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const SuggestUsersDocument = gql`
+    query suggestUsers($suggestUsersInput: SuggestUsersInput!) {
+  suggestUsers(suggestUsersInput: $suggestUsersInput) {
+    id
+    username
+    email
+    fullName
+    profile {
+      image_url
+    }
+    created_at
+  }
+}
+    `;
+
+/**
+ * __useSuggestUsersQuery__
+ *
+ * To run a query within a React component, call `useSuggestUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSuggestUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSuggestUsersQuery({
+ *   variables: {
+ *      suggestUsersInput: // value for 'suggestUsersInput'
+ *   },
+ * });
+ */
+export function useSuggestUsersQuery(baseOptions: Apollo.QueryHookOptions<SuggestUsersQuery, SuggestUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SuggestUsersQuery, SuggestUsersQueryVariables>(SuggestUsersDocument, options);
+      }
+export function useSuggestUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SuggestUsersQuery, SuggestUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SuggestUsersQuery, SuggestUsersQueryVariables>(SuggestUsersDocument, options);
+        }
+export type SuggestUsersQueryHookResult = ReturnType<typeof useSuggestUsersQuery>;
+export type SuggestUsersLazyQueryHookResult = ReturnType<typeof useSuggestUsersLazyQuery>;
+export type SuggestUsersQueryResult = Apollo.QueryResult<SuggestUsersQuery, SuggestUsersQueryVariables>;

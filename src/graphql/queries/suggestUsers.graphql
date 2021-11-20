@@ -1,0 +1,12 @@
+query suggestUsers($suggestUsersInput: SuggestUsersInput!) {
+	suggestUsers(suggestUsersInput: $suggestUsersInput) {
+		id
+		username
+		email
+		fullName
+		profile {
+			image_url
+		}
+		created_at
+	}
+}
