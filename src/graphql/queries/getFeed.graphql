@@ -1,0 +1,27 @@
+query getFeed($getFeedInput: GetFeedInput!) {
+	getFeed(getFeedInput: $getFeedInput) {
+		id
+		caption
+		image_url
+		created_at
+		comments(limit: 2) {
+			handle
+			id
+			content
+		}
+		likes
+		likeCount
+		handle
+		commentCount
+		tags {
+			id
+			name
+		}
+		user {
+			profile {
+				image_url
+			}
+			fullName
+		}
+	}
+}

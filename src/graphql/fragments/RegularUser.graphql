@@ -3,5 +3,6 @@ fragment RegularUser on User {
 	username
 	fullName
 	email
+	saved_posts
 	created_at
 }

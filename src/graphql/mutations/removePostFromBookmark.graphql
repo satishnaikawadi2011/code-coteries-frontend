@@ -1,0 +1,3 @@
+mutation removePostFromBookmark($postId: String!) {
+	removePostFromBookmark(postId: $postId)
+}

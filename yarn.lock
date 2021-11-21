@@ -9453,6 +9453,11 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "^3.0.0"
 
+lodash.throttle@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+  integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
+
 lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
@@ -11764,6 +11769,13 @@ react-flip-move@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-flip-move/-/react-flip-move-3.0.4.tgz#261f66101fbc305f9b7b28959c5cf8236413ca74"
   integrity sha512-HyUVv9g3t/BS7Yz9HgrtYSWyRNdR2F81nkj+C5iRY675AwlqCLB5JU9mnZWg0cdVz7IM4iquoyZx70vzZv3Z8Q==
+
+react-graceful-image@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-graceful-image/-/react-graceful-image-1.5.0.tgz#90c70648044cff8bb1ca865e3ffe983d5bb8ce40"
+  integrity sha512-u4zcHLWyvlO84TQj/nSZP2mQf0NqvnL4J2wna/d56bB1hzAGEb/7YXqQh2kqrSl1p5wLvCsnngXdNv+phWSrxw==
+  dependencies:
+    lodash.throttle "^4.1.1"
 
 react-helmet@^6.1.0:
   version "6.1.0"

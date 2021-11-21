@@ -1,0 +1,14 @@
+mutation addComment($addCommentInput: AddCommentInput!) {
+	addComment(addCommentInput: $addCommentInput) {
+		eventComment {
+			id
+			content
+			handle
+		}
+		postComment {
+			id
+			content
+			handle
+		}
+	}
+}

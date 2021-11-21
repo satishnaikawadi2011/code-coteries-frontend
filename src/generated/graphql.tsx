@@ -133,11 +133,13 @@ export type Education = {
 
 export type Event = {
   __typename?: 'Event';
+  avatar_url: Scalars['String'];
   comments?: Maybe<Array<EventComment>>;
   created_at: Scalars['DateTime'];
   description: Scalars['String'];
   event_date: Scalars['String'];
   event_url: Scalars['String'];
+  handle: Scalars['String'];
   id: Scalars['String'];
   image_url: Scalars['String'];
   likeCount: Scalars['Float'];
@@ -173,11 +175,18 @@ export type Experience = {
   to?: Maybe<Scalars['DateTime']>;
 };
 
+export type GetFeedInput = {
+  feedIds?: Maybe<Array<Scalars['String']>>;
+  lastTimestamp: Scalars['String'];
+  limit?: Maybe<Scalars['Int']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addComment: CommentResponse;
   addEducation: Education;
   addExperience: Experience;
+  addPostToBookmark: Scalars['String'];
   createEvent: Event;
   createPost: Post;
   createTag: Tag;
@@ -194,6 +203,7 @@ export type Mutation = {
   registerUser: AuthResponse;
   removeEducation: Scalars['String'];
   removeExperience: Scalars['String'];
+  removePostFromBookmark: Scalars['String'];
   signinUser: AuthResponse;
   unfollowUser: Scalars['String'];
 };
@@ -211,6 +221,11 @@ export type MutationAddEducationArgs = {
 
 export type MutationAddExperienceArgs = {
   addExperienceInput: AddExperienceInput;
+};
+
+
+export type MutationAddPostToBookmarkArgs = {
+  postId: Scalars['String'];
 };
 
 
@@ -297,6 +312,11 @@ export type MutationRemoveExperienceArgs = {
 };
 
 
+export type MutationRemovePostFromBookmarkArgs = {
+  postId: Scalars['String'];
+};
+
+
 export type MutationSigninUserArgs = {
   signinUserInput: SigninUserInput;
 };
@@ -308,7 +328,9 @@ export type MutationUnfollowUserArgs = {
 
 export type Post = {
   __typename?: 'Post';
+  avatar_url: Scalars['String'];
   caption: Scalars['String'];
+  commentCount: Scalars['Float'];
   comments?: Maybe<Array<PostComment>>;
   created_at: Scalars['DateTime'];
   handle: Scalars['String'];
@@ -319,6 +341,12 @@ export type Post = {
   tags?: Maybe<Array<Tag>>;
   updated_at: Scalars['DateTime'];
   user: User;
+};
+
+
+export type PostCommentsArgs = {
+  lastTimestamp?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Float']>;
 };
 
 export type PostComment = {
@@ -353,6 +381,7 @@ export type Query = {
   getAllTags: Array<Tag>;
   getEvent: Event;
   getEventsByTag: Array<Event>;
+  getFeed: Array<Post>;
   getMyFollowers: Array<User>;
   getMyFollowings: Array<User>;
   getMyProfile: Profile;
@@ -360,6 +389,7 @@ export type Query = {
   getPost: Post;
   getPostsByTag: Array<Post>;
   me: User;
+  searchUsers: Array<User>;
   suggestUsers: Array<User>;
 };
 
@@ -380,6 +410,11 @@ export type QueryGetEventsByTagArgs = {
 };
 
 
+export type QueryGetFeedArgs = {
+  getFeedInput: GetFeedInput;
+};
+
+
 export type QueryGetPostArgs = {
   postId: Scalars['String'];
 };
@@ -387,6 +422,12 @@ export type QueryGetPostArgs = {
 
 export type QueryGetPostsByTagArgs = {
   tagId: Scalars['String'];
+};
+
+
+export type QuerySearchUsersArgs = {
+  limit?: Maybe<Scalars['Float']>;
+  query: Scalars['String'];
 };
 
 
@@ -444,13 +485,21 @@ export type User = {
   post_comments?: Maybe<Array<PostComment>>;
   posts?: Maybe<Array<Post>>;
   profile?: Maybe<Profile>;
+  saved_posts: Array<Scalars['String']>;
   updated_at: Scalars['DateTime'];
   username: Scalars['String'];
 };
 
 export type CompleteUserFragment = { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined };
 
-export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any };
+export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any };
+
+export type AddCommentMutationVariables = Exact<{
+  addCommentInput: AddCommentInput;
+}>;
+
+
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'CommentResponse', eventComment?: { __typename?: 'EventComment', id: string, content: string, handle: string } | null | undefined, postComment?: { __typename?: 'PostComment', id: string, content: string, handle: string } | null | undefined } };
 
 export type AddEducationMutationVariables = Exact<{
   addEducationInput: AddEducationInput;
@@ -465,6 +514,13 @@ export type AddExperienceMutationVariables = Exact<{
 
 
 export type AddExperienceMutation = { __typename?: 'Mutation', addExperience: { __typename?: 'Experience', id: string, title: string, company: string, location: string, from: any, to?: any | null | undefined, current: boolean, description: string } };
+
+export type AddPostToBookmarkMutationVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type AddPostToBookmarkMutation = { __typename?: 'Mutation', addPostToBookmark: string };
 
 export type CreateEventMutationVariables = Exact<{
   addEventInput: AddEventInput;
@@ -515,19 +571,26 @@ export type FollowUserMutationVariables = Exact<{
 
 export type FollowUserMutation = { __typename?: 'Mutation', followUser: { __typename?: 'User', id: string, username: string, email: string, fullName: string, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } };
 
+export type LikePostMutationVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type LikePostMutation = { __typename?: 'Mutation', likePost: { __typename?: 'Post', id: string } };
+
 export type SigninUserMutationVariables = Exact<{
   signinUserInput: SigninUserInput;
 }>;
 
 
-export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any } } };
+export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any } } };
 
 export type RegisterUserMutationVariables = Exact<{
   createUserInput: CreateUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, created_at: any } } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any } } };
 
 export type RemoveEducationMutationVariables = Exact<{
   id: Scalars['String'];
@@ -542,6 +605,13 @@ export type RemoveExperienceMutationVariables = Exact<{
 
 
 export type RemoveExperienceMutation = { __typename?: 'Mutation', removeExperience: string };
+
+export type RemovePostFromBookmarkMutationVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type RemovePostFromBookmarkMutation = { __typename?: 'Mutation', removePostFromBookmark: string };
 
 export type UnfollowUserMutationVariables = Exact<{
   id: Scalars['String'];
@@ -559,6 +629,13 @@ export type GetAllTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllTagsQuery = { __typename?: 'Query', getAllTags: Array<{ __typename?: 'Tag', id: string, name: string, description: string, likes: Array<string>, likesCount: number }> };
+
+export type GetFeedQueryVariables = Exact<{
+  getFeedInput: GetFeedInput;
+}>;
+
+
+export type GetFeedQuery = { __typename?: 'Query', getFeed: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: any, likes: Array<string>, likeCount: number, handle: string, commentCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, id: string, content: string }> | null | undefined, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null | undefined, user: { __typename?: 'User', fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
 
 export type GetMyFollowersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -643,9 +720,52 @@ export const RegularUserFragmentDoc = gql`
   username
   fullName
   email
+  saved_posts
   created_at
 }
     `;
+export const AddCommentDocument = gql`
+    mutation addComment($addCommentInput: AddCommentInput!) {
+  addComment(addCommentInput: $addCommentInput) {
+    eventComment {
+      id
+      content
+      handle
+    }
+    postComment {
+      id
+      content
+      handle
+    }
+  }
+}
+    `;
+export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
+
+/**
+ * __useAddCommentMutation__
+ *
+ * To run a mutation, you first call `useAddCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCommentMutation, { data, loading, error }] = useAddCommentMutation({
+ *   variables: {
+ *      addCommentInput: // value for 'addCommentInput'
+ *   },
+ * });
+ */
+export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<AddCommentMutation, AddCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCommentMutation, AddCommentMutationVariables>(AddCommentDocument, options);
+      }
+export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
+export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
+export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
 export const AddEducationDocument = gql`
     mutation addEducation($addEducationInput: AddEducationInput!) {
   addEducation(addEducationInput: $addEducationInput) {
@@ -726,6 +846,37 @@ export function useAddExperienceMutation(baseOptions?: Apollo.MutationHookOption
 export type AddExperienceMutationHookResult = ReturnType<typeof useAddExperienceMutation>;
 export type AddExperienceMutationResult = Apollo.MutationResult<AddExperienceMutation>;
 export type AddExperienceMutationOptions = Apollo.BaseMutationOptions<AddExperienceMutation, AddExperienceMutationVariables>;
+export const AddPostToBookmarkDocument = gql`
+    mutation addPostToBookmark($postId: String!) {
+  addPostToBookmark(postId: $postId)
+}
+    `;
+export type AddPostToBookmarkMutationFn = Apollo.MutationFunction<AddPostToBookmarkMutation, AddPostToBookmarkMutationVariables>;
+
+/**
+ * __useAddPostToBookmarkMutation__
+ *
+ * To run a mutation, you first call `useAddPostToBookmarkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPostToBookmarkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPostToBookmarkMutation, { data, loading, error }] = useAddPostToBookmarkMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useAddPostToBookmarkMutation(baseOptions?: Apollo.MutationHookOptions<AddPostToBookmarkMutation, AddPostToBookmarkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPostToBookmarkMutation, AddPostToBookmarkMutationVariables>(AddPostToBookmarkDocument, options);
+      }
+export type AddPostToBookmarkMutationHookResult = ReturnType<typeof useAddPostToBookmarkMutation>;
+export type AddPostToBookmarkMutationResult = Apollo.MutationResult<AddPostToBookmarkMutation>;
+export type AddPostToBookmarkMutationOptions = Apollo.BaseMutationOptions<AddPostToBookmarkMutation, AddPostToBookmarkMutationVariables>;
 export const CreateEventDocument = gql`
     mutation createEvent($addEventInput: AddEventInput!) {
   createEvent(addEventInput: $addEventInput) {
@@ -993,6 +1144,39 @@ export function useFollowUserMutation(baseOptions?: Apollo.MutationHookOptions<F
 export type FollowUserMutationHookResult = ReturnType<typeof useFollowUserMutation>;
 export type FollowUserMutationResult = Apollo.MutationResult<FollowUserMutation>;
 export type FollowUserMutationOptions = Apollo.BaseMutationOptions<FollowUserMutation, FollowUserMutationVariables>;
+export const LikePostDocument = gql`
+    mutation likePost($postId: String!) {
+  likePost(postId: $postId) {
+    id
+  }
+}
+    `;
+export type LikePostMutationFn = Apollo.MutationFunction<LikePostMutation, LikePostMutationVariables>;
+
+/**
+ * __useLikePostMutation__
+ *
+ * To run a mutation, you first call `useLikePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likePostMutation, { data, loading, error }] = useLikePostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useLikePostMutation(baseOptions?: Apollo.MutationHookOptions<LikePostMutation, LikePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikePostMutation, LikePostMutationVariables>(LikePostDocument, options);
+      }
+export type LikePostMutationHookResult = ReturnType<typeof useLikePostMutation>;
+export type LikePostMutationResult = Apollo.MutationResult<LikePostMutation>;
+export type LikePostMutationOptions = Apollo.BaseMutationOptions<LikePostMutation, LikePostMutationVariables>;
 export const SigninUserDocument = gql`
     mutation signinUser($signinUserInput: SigninUserInput!) {
   signinUser(signinUserInput: $signinUserInput) {
@@ -1127,6 +1311,37 @@ export function useRemoveExperienceMutation(baseOptions?: Apollo.MutationHookOpt
 export type RemoveExperienceMutationHookResult = ReturnType<typeof useRemoveExperienceMutation>;
 export type RemoveExperienceMutationResult = Apollo.MutationResult<RemoveExperienceMutation>;
 export type RemoveExperienceMutationOptions = Apollo.BaseMutationOptions<RemoveExperienceMutation, RemoveExperienceMutationVariables>;
+export const RemovePostFromBookmarkDocument = gql`
+    mutation removePostFromBookmark($postId: String!) {
+  removePostFromBookmark(postId: $postId)
+}
+    `;
+export type RemovePostFromBookmarkMutationFn = Apollo.MutationFunction<RemovePostFromBookmarkMutation, RemovePostFromBookmarkMutationVariables>;
+
+/**
+ * __useRemovePostFromBookmarkMutation__
+ *
+ * To run a mutation, you first call `useRemovePostFromBookmarkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePostFromBookmarkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePostFromBookmarkMutation, { data, loading, error }] = useRemovePostFromBookmarkMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useRemovePostFromBookmarkMutation(baseOptions?: Apollo.MutationHookOptions<RemovePostFromBookmarkMutation, RemovePostFromBookmarkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePostFromBookmarkMutation, RemovePostFromBookmarkMutationVariables>(RemovePostFromBookmarkDocument, options);
+      }
+export type RemovePostFromBookmarkMutationHookResult = ReturnType<typeof useRemovePostFromBookmarkMutation>;
+export type RemovePostFromBookmarkMutationResult = Apollo.MutationResult<RemovePostFromBookmarkMutation>;
+export type RemovePostFromBookmarkMutationOptions = Apollo.BaseMutationOptions<RemovePostFromBookmarkMutation, RemovePostFromBookmarkMutationVariables>;
 export const UnfollowUserDocument = gql`
     mutation unfollowUser($id: String!) {
   unfollowUser(id: $id)
@@ -1246,6 +1461,63 @@ export function useGetAllTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllTagsQueryHookResult = ReturnType<typeof useGetAllTagsQuery>;
 export type GetAllTagsLazyQueryHookResult = ReturnType<typeof useGetAllTagsLazyQuery>;
 export type GetAllTagsQueryResult = Apollo.QueryResult<GetAllTagsQuery, GetAllTagsQueryVariables>;
+export const GetFeedDocument = gql`
+    query getFeed($getFeedInput: GetFeedInput!) {
+  getFeed(getFeedInput: $getFeedInput) {
+    id
+    caption
+    image_url
+    created_at
+    comments(limit: 2) {
+      handle
+      id
+      content
+    }
+    likes
+    likeCount
+    handle
+    commentCount
+    tags {
+      id
+      name
+    }
+    user {
+      profile {
+        image_url
+      }
+      fullName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFeedQuery__
+ *
+ * To run a query within a React component, call `useGetFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFeedQuery({
+ *   variables: {
+ *      getFeedInput: // value for 'getFeedInput'
+ *   },
+ * });
+ */
+export function useGetFeedQuery(baseOptions: Apollo.QueryHookOptions<GetFeedQuery, GetFeedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFeedQuery, GetFeedQueryVariables>(GetFeedDocument, options);
+      }
+export function useGetFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFeedQuery, GetFeedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFeedQuery, GetFeedQueryVariables>(GetFeedDocument, options);
+        }
+export type GetFeedQueryHookResult = ReturnType<typeof useGetFeedQuery>;
+export type GetFeedLazyQueryHookResult = ReturnType<typeof useGetFeedLazyQuery>;
+export type GetFeedQueryResult = Apollo.QueryResult<GetFeedQuery, GetFeedQueryVariables>;
 export const GetMyFollowersDocument = gql`
     query getMyFollowers {
   getMyFollowers {
