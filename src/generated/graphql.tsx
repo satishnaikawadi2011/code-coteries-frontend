@@ -177,7 +177,7 @@ export type Experience = {
 
 export type GetFeedInput = {
   feedIds?: Maybe<Array<Scalars['String']>>;
-  lastTimestamp: Scalars['String'];
+  lastTimestamp?: Maybe<Scalars['String']>;
   limit?: Maybe<Scalars['Int']>;
 };
 
@@ -332,14 +332,14 @@ export type Post = {
   caption: Scalars['String'];
   commentCount: Scalars['Float'];
   comments?: Maybe<Array<PostComment>>;
-  created_at: Scalars['DateTime'];
+  created_at: Scalars['String'];
   handle: Scalars['String'];
   id: Scalars['String'];
   image_url: Scalars['String'];
   likeCount: Scalars['Float'];
   likes: Array<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
-  updated_at: Scalars['DateTime'];
+  updated_at: Scalars['String'];
   user: User;
 };
 
@@ -492,7 +492,7 @@ export type User = {
 
 export type CompleteUserFragment = { __typename?: 'User', id: string, username: string, email: string, fullName: string, profile?: { __typename?: 'Profile', id: string, bio?: string | null | undefined, website?: string | null | undefined, company?: string | null | undefined, location?: string | null | undefined, github?: string | null | undefined, image_url: string, experience?: Array<{ __typename?: 'Experience', id: string, title: string, company: string, from: any, to?: any | null | undefined, location: string, current: boolean, description: string }> | null | undefined, social?: { __typename?: 'Social', id: string, youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined } | null | undefined, education?: Array<{ __typename?: 'Education', id: string, school: string, degree: string, from: any, to?: any | null | undefined, current: boolean, description: string, field: string }> | null | undefined } | null | undefined };
 
-export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any };
+export type RegularUserFragment = { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined };
 
 export type AddCommentMutationVariables = Exact<{
   addCommentInput: AddCommentInput;
@@ -534,7 +534,7 @@ export type CreatePostMutationVariables = Exact<{
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, created_at: any, caption: string, image_url: string, updated_at: any, likes: Array<string>, likeCount: number } };
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, created_at: string, caption: string, image_url: string, updated_at: string, likes: Array<string>, likeCount: number } };
 
 export type DeletePostMutationVariables = Exact<{
   postId: Scalars['String'];
@@ -583,14 +583,14 @@ export type SigninUserMutationVariables = Exact<{
 }>;
 
 
-export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any } } };
+export type SigninUserMutation = { __typename?: 'Mutation', signinUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } } };
 
 export type RegisterUserMutationVariables = Exact<{
   createUserInput: CreateUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any } } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', id: string, username: string, fullName: string, email: string, saved_posts: Array<string>, created_at: any, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } } };
 
 export type RemoveEducationMutationVariables = Exact<{
   id: Scalars['String'];
@@ -623,7 +623,7 @@ export type UnfollowUserMutation = { __typename?: 'Mutation', unfollowUser: stri
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: any, likes: Array<string>, likeCount: number, tags?: Array<{ __typename?: 'Tag', name: string, id: string }> | null | undefined, user: { __typename?: 'User', username: string, fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: string, likes: Array<string>, likeCount: number, tags?: Array<{ __typename?: 'Tag', name: string, id: string }> | null | undefined, user: { __typename?: 'User', username: string, fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
 
 export type GetAllTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -635,7 +635,7 @@ export type GetFeedQueryVariables = Exact<{
 }>;
 
 
-export type GetFeedQuery = { __typename?: 'Query', getFeed: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: any, likes: Array<string>, likeCount: number, handle: string, commentCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, id: string, content: string }> | null | undefined, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null | undefined, user: { __typename?: 'User', fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
+export type GetFeedQuery = { __typename?: 'Query', getFeed: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: string, likes: Array<string>, likeCount: number, handle: string, commentCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, id: string, content: string }> | null | undefined, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null | undefined, user: { __typename?: 'User', fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
 
 export type GetMyFollowersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -722,6 +722,9 @@ export const RegularUserFragmentDoc = gql`
   email
   saved_posts
   created_at
+  profile {
+    image_url
+  }
 }
     `;
 export const AddCommentDocument = gql`

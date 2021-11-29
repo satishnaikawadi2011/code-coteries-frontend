@@ -5,4 +5,7 @@ fragment RegularUser on User {
 	email
 	saved_posts
 	created_at
+	profile {
+		image_url
+	}
 }

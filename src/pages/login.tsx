@@ -9,6 +9,7 @@ import Logo from 'src/components/shared/Logo';
 import SEO from 'src/components/shared/Seo';
 import { useSigninUserMutation } from 'src/generated/graphql';
 import useAuth from 'src/hooks/useAuth';
+import { useAuthStore } from 'src/store/auth';
 import { useLoginPageStyles } from 'src/styles/login';
 import * as Yup from 'yup';
 import authStorage from '../utils/storage/auth'
@@ -27,15 +28,17 @@ const LoginPage = () => {
 	const history = useHistory();
 
 	const classes = useLoginPageStyles();
-    const { isAuthenticated } = useAuth()
+	const { isAuthenticated } = useAuth()
+	const {setToken,setUser} = useAuthStore()
 	const [signinUser, { loading, data, error }] = useSigninUserMutation()
 
 	useEffect(() => {
 		if (data) {
 			const { token, user, __typename } = data.signinUser;
-			console.log(data)
 			authStorage.set({ token, user, __typename });
-            history.replace('/')
+			setToken(token);
+			setUser(user);
+			window.location.href = '/'
 		}
 	}, [data,history])
 	

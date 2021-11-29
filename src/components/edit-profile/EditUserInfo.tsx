@@ -29,7 +29,7 @@ const validationSchema = Yup.object({	bio:Yup.string(),
 
 const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 	const classes = useEditProfilePageStyles();
-	const { user } = useAuthStore();
+	const { user,updateUser } = useAuthStore();
 	const initialValues = {
 		bio:
 
@@ -56,15 +56,6 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 		username: user?.username
 	};
 
-
-	const [
-		profileImage,
-		setProfileImage
-	] = useState(
-
-			profile ? profile.image_url :
-			DEFAULT_USER_AVATAR
-	);
 	const [
 		editProfile,{loading:editProfileLoading,data:editProfileData,error:editProfileError}
 	] = useEditProfileMutation();
@@ -86,11 +77,11 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 
 	const { upload } = useCloudinaryUpload();
 
+
 	async function handleUpdateProfilePic(event: any) {
 		const cloudinaryData = await upload(event.target.files[0], 'file');
-		console.log('Here',cloudinaryData)
 		await editUserAvatar({ variables: { url: cloudinaryData.url } });
-		setProfileImage(cloudinaryData.url);
+		updateUser({ profile: { ...user?.profile,image_url: cloudinaryData.url } });
 	}
 
 	const loading = editProfileLoading || editUserAvatarLoading;
@@ -98,7 +89,7 @@ const EditUserInfo: React.FC<EditUserInfoProps> = ({ profile }) => {
 	return (
 		<section className={classes.container}>
 			<div className={classes.pictureSectionItem}>
-				<ProfilePicture size={38} image={profileImage} />
+				<ProfilePicture size={38} image={user!.profile?.image_url || DEFAULT_USER_AVATAR} />
 				<div className={classes.justifySelfStart}>
 					<Typography className={classes.typography}>{user?.username}</Typography>
 					<input

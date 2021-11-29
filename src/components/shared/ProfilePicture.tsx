@@ -10,9 +10,11 @@ interface ProfilePictureProps {
 	size: number;
 	image: string;
 	isOwner?: boolean;
+	disabled?: boolean;
 }
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({ image, isOwner = true, size }) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({ image, isOwner = true, size, disabled }) => {
+	const { updateUser } = useAuthStore();
 	const classes = useProfilePictureStyles({ size, isOwner });
 	const inputRef: any = React.useRef();
 	const [
@@ -28,7 +30,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ image, isOwner = true, 
 	async function handleUpdateProfilePic(event: any) {
 		const cloudinaryData = await upload(event.target.files[0], 'file');
 		await editUserAvatar({ variables: { url: cloudinaryData.url } });
-		setImg(cloudinaryData.url);
+		updateUser({ profile: { image_url: cloudinaryData.url } });
 	}
 
 	function openFileInput() {
@@ -37,7 +39,16 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ image, isOwner = true, 
 
 	return (
 		<section className={classes.section}>
-			<input style={{ display: 'none' }} ref={inputRef} type="file" onChange={handleUpdateProfilePic} />
+			<input
+				style={{ display: 'none' }}
+				ref={inputRef}
+				type="file"
+				onChange={
+
+						disabled ? () => {} :
+						handleUpdateProfilePic
+				}
+			/>
 			{
 				image ? <div
 					className={classes.wrapper}

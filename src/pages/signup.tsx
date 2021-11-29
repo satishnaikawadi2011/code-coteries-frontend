@@ -9,6 +9,7 @@ import Logo from 'src/components/shared/Logo';
 import SEO from 'src/components/shared/Seo';
 import { useRegisterUserMutation } from 'src/generated/graphql';
 import useAuth from 'src/hooks/useAuth';
+import { useAuthStore } from 'src/store/auth';
 import { useSignupPageStyles } from 'src/styles/signup';
 import * as Yup from 'yup';
 import authStorage from '../utils/storage/auth';
@@ -29,11 +30,12 @@ const authSchema = Yup.object({
 
 const SignupPage = () => {
 
-    const history = useHistory();
 
 	const classes = useSignupPageStyles();
 
 	const { isAuthenticated } = useAuth()
+
+	const {setUser,setToken} = useAuthStore();
 
 	const [
 		registerUser,
@@ -45,7 +47,9 @@ const SignupPage = () => {
 		if (data) {
 			const { token,user,__typename} = data.registerUser;
 			authStorage.set({ token, user, __typename });
-			history.replace('/');
+			setToken(token);
+			setUser(user);
+			window.location.href = '/'
 		}
 	},[data])
 

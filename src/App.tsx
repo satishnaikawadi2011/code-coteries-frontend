@@ -16,9 +16,11 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import AddEventPage from './pages/add-event';
 import { useGetMyFollowersLazyQuery, useGetMyFollowingsLazyQuery } from './generated/graphql';
 import LoadingScreen from './components/shared/LoadingScreen';
+import { useUserStore } from './store/user';
 
 function App() {
-	const { setToken, setUser } = useAuthStore();
+	const { setToken, setUser, user } = useAuthStore();
+	const { setFeedIds, setFollowerIds, setFollowingIds } = useUserStore();
 
 	useEffect(() => {
 		const authData = authStorage.get();
@@ -32,12 +34,32 @@ function App() {
 
 	const [
 		getFollowers,
-		{ loading: l1 }
+		{ loading: l1, data: followers }
 	] = useGetMyFollowersLazyQuery();
 	const [
 		getFollowings,
-		{ loading: l2 }
+		{ loading: l2, data: followings }
 	] = useGetMyFollowingsLazyQuery();
+
+	useEffect(
+		() => {
+			if (followers && followings) {
+				const frIds = followers.getMyFollowers.map((u) => u.id);
+				const fgIds = followings.getMyFollowings.map((u) => u.id);
+				setFollowerIds(frIds);
+				setFollowingIds(fgIds);
+				setFeedIds([
+					...fgIds,
+					...frIds,
+					user!.id
+				]);
+			}
+		},
+		[
+			followers,
+			followings
+		]
+	);
 
 	if (l1 || l2) {
 		return <LoadingScreen />;

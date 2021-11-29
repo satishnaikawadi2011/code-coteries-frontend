@@ -10,7 +10,6 @@ import EditSocialLinks from 'src/components/edit-profile/EditSocialLinks';
 import EditEducation from 'src/components/edit-profile/EditEducation';
 import EditExperience from 'src/components/edit-profile/EditExperience';
 import WorkInProgressAnimation from 'src/animations/components/WorkInProgress';
-import ComingSoonAnimation from 'src/animations/components/ComingSoon';
 
 export type KeyType = 'profile' | 'education' | 'experience' | 'social' | 'apps-and-websites' | 'email-sms' | 'push-notifications' | 'privacy-security' | 'emails-from-code-coteries';
 export interface DrawerOptionType {

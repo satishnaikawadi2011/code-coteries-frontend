@@ -9,16 +9,16 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 ReactDOM.render(
-	<React.StrictMode>
-		<AppApolloProvider>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<App />
-				</LocalizationProvider>
-			</ThemeProvider>
-		</AppApolloProvider>
-	</React.StrictMode>,
+	// <React.StrictMode>
+	<AppApolloProvider>
+		<ThemeProvider theme={theme}>
+			<CssBaseline />
+			<LocalizationProvider dateAdapter={AdapterDateFns}>
+				<App />
+			</LocalizationProvider>
+		</ThemeProvider>
+	</AppApolloProvider>,
+	// </React.StrictMode>,
 	document.getElementById('root')
 );
 
