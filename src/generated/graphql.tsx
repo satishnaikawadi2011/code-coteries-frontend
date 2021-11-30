@@ -153,12 +153,12 @@ export type Event = {
 export type EventComment = {
   __typename?: 'EventComment';
   content: Scalars['String'];
-  created_at: Scalars['DateTime'];
+  created_at: Scalars['String'];
   event: Event;
   handle: Scalars['String'];
   id: Scalars['String'];
   likes: Array<Scalars['String']>;
-  updated_at: Scalars['DateTime'];
+  updated_at: Scalars['String'];
   user: User;
 };
 
@@ -352,12 +352,12 @@ export type PostCommentsArgs = {
 export type PostComment = {
   __typename?: 'PostComment';
   content: Scalars['String'];
-  created_at: Scalars['DateTime'];
+  created_at: Scalars['String'];
   handle: Scalars['String'];
   id: Scalars['String'];
   likes: Array<Scalars['String']>;
   post: Post;
-  updated_at: Scalars['DateTime'];
+  updated_at: Scalars['String'];
   user: User;
 };
 
@@ -382,6 +382,7 @@ export type Query = {
   getEvent: Event;
   getEventsByTag: Array<Event>;
   getFeed: Array<Post>;
+  getMorePostsFromUser: Array<Post>;
   getMyFollowers: Array<User>;
   getMyFollowings: Array<User>;
   getMyProfile: Profile;
@@ -412,6 +413,13 @@ export type QueryGetEventsByTagArgs = {
 
 export type QueryGetFeedArgs = {
   getFeedInput: GetFeedInput;
+};
+
+
+export type QueryGetMorePostsFromUserArgs = {
+  limit?: Maybe<Scalars['Float']>;
+  postId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -499,7 +507,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'CommentResponse', eventComment?: { __typename?: 'EventComment', id: string, content: string, handle: string } | null | undefined, postComment?: { __typename?: 'PostComment', id: string, content: string, handle: string } | null | undefined } };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'CommentResponse', eventComment?: { __typename?: 'EventComment', id: string, content: string, handle: string, created_at: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } } | null | undefined, postComment?: { __typename?: 'PostComment', id: string, content: string, handle: string, created_at: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } } | null | undefined } };
 
 export type AddEducationMutationVariables = Exact<{
   addEducationInput: AddEducationInput;
@@ -637,6 +645,15 @@ export type GetFeedQueryVariables = Exact<{
 
 export type GetFeedQuery = { __typename?: 'Query', getFeed: Array<{ __typename?: 'Post', id: string, caption: string, image_url: string, created_at: string, likes: Array<string>, likeCount: number, handle: string, commentCount: number, comments?: Array<{ __typename?: 'PostComment', handle: string, id: string, content: string }> | null | undefined, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null | undefined, user: { __typename?: 'User', fullName: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> };
 
+export type GetMorePostsFromUserQueryVariables = Exact<{
+  userId: Scalars['String'];
+  postId: Scalars['String'];
+  limit?: Maybe<Scalars['Float']>;
+}>;
+
+
+export type GetMorePostsFromUserQuery = { __typename?: 'Query', getMorePostsFromUser: Array<{ __typename?: 'Post', id: string, image_url: string, likeCount: number, commentCount: number }> };
+
 export type GetMyFollowersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -656,6 +673,13 @@ export type GetMySocialQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMySocialQuery = { __typename?: 'Query', getMySocial: { __typename?: 'Social', youtube?: string | null | undefined, facebook?: string | null | undefined, instagram?: string | null | undefined, twitter?: string | null | undefined, linkedin?: string | null | undefined, id: string } };
+
+export type GetPostQueryVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type GetPostQuery = { __typename?: 'Query', getPost: { __typename?: 'Post', id: string, caption: string, image_url: string, created_at: string, updated_at: string, likes: Array<string>, handle: string, avatar_url: string, likeCount: number, commentCount: number, comments?: Array<{ __typename?: 'PostComment', id: string, content: string, handle: string, created_at: string, likes: Array<string>, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', image_url: string } | null | undefined } }> | null | undefined, user: { __typename?: 'User', id: string, fullName: string }, tags?: Array<{ __typename?: 'Tag', id: string, name: string }> | null | undefined } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -734,11 +758,25 @@ export const AddCommentDocument = gql`
       id
       content
       handle
+      created_at
+      user {
+        username
+        profile {
+          image_url
+        }
+      }
     }
     postComment {
       id
       content
       handle
+      created_at
+      user {
+        username
+        profile {
+          image_url
+        }
+      }
     }
   }
 }
@@ -1521,6 +1559,46 @@ export function useGetFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetFeedQueryHookResult = ReturnType<typeof useGetFeedQuery>;
 export type GetFeedLazyQueryHookResult = ReturnType<typeof useGetFeedLazyQuery>;
 export type GetFeedQueryResult = Apollo.QueryResult<GetFeedQuery, GetFeedQueryVariables>;
+export const GetMorePostsFromUserDocument = gql`
+    query getMorePostsFromUser($userId: String!, $postId: String!, $limit: Float) {
+  getMorePostsFromUser(userId: $userId, postId: $postId, limit: $limit) {
+    id
+    image_url
+    likeCount
+    commentCount
+  }
+}
+    `;
+
+/**
+ * __useGetMorePostsFromUserQuery__
+ *
+ * To run a query within a React component, call `useGetMorePostsFromUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMorePostsFromUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMorePostsFromUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      postId: // value for 'postId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetMorePostsFromUserQuery(baseOptions: Apollo.QueryHookOptions<GetMorePostsFromUserQuery, GetMorePostsFromUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMorePostsFromUserQuery, GetMorePostsFromUserQueryVariables>(GetMorePostsFromUserDocument, options);
+      }
+export function useGetMorePostsFromUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMorePostsFromUserQuery, GetMorePostsFromUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMorePostsFromUserQuery, GetMorePostsFromUserQueryVariables>(GetMorePostsFromUserDocument, options);
+        }
+export type GetMorePostsFromUserQueryHookResult = ReturnType<typeof useGetMorePostsFromUserQuery>;
+export type GetMorePostsFromUserLazyQueryHookResult = ReturnType<typeof useGetMorePostsFromUserLazyQuery>;
+export type GetMorePostsFromUserQueryResult = Apollo.QueryResult<GetMorePostsFromUserQuery, GetMorePostsFromUserQueryVariables>;
 export const GetMyFollowersDocument = gql`
     query getMyFollowers {
   getMyFollowers {
@@ -1682,6 +1760,71 @@ export function useGetMySocialLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetMySocialQueryHookResult = ReturnType<typeof useGetMySocialQuery>;
 export type GetMySocialLazyQueryHookResult = ReturnType<typeof useGetMySocialLazyQuery>;
 export type GetMySocialQueryResult = Apollo.QueryResult<GetMySocialQuery, GetMySocialQueryVariables>;
+export const GetPostDocument = gql`
+    query getPost($postId: String!) {
+  getPost(postId: $postId) {
+    id
+    caption
+    image_url
+    created_at
+    updated_at
+    comments {
+      id
+      content
+      handle
+      created_at
+      likes
+      user {
+        username
+        profile {
+          image_url
+        }
+      }
+    }
+    user {
+      id
+      fullName
+    }
+    likes
+    handle
+    avatar_url
+    likeCount
+    commentCount
+    tags {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPostQuery__
+ *
+ * To run a query within a React component, call `useGetPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useGetPostQuery(baseOptions: Apollo.QueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
+      }
+export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
+        }
+export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
+export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
+export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>;
 export const MeDocument = gql`
     query me {
   me {

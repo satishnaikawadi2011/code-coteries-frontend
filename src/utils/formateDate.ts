@@ -1,6 +1,6 @@
 import { format, isThisYear, formatDistanceStrict, formatDistanceToNow } from 'date-fns';
 
-export function formatPostDate(date: string) {
+export function formatPostDate(date: string | number) {
 	const formatShort = format(new Date(date), 'MMMM d').toUpperCase();
 	const formatLong = format(new Date(date), 'MMMM d, yyy').toUpperCase();
 
@@ -10,7 +10,7 @@ export function formatPostDate(date: string) {
 	return ans;
 }
 
-export function formatDateToNowShort(date: string) {
+export function formatDateToNowShort(date: string | number) {
 	return formatDistanceStrict(new Date(date), new Date(Date.now()))
 		.split(' ')
 		.map(
@@ -22,6 +22,6 @@ export function formatDateToNowShort(date: string) {
 		.join('');
 }
 
-export function formatDateToNow(date: string) {
+export function formatDateToNow(date: string | number) {
 	return formatDistanceToNow(new Date(date), { addSuffix: true }).toUpperCase();
 }

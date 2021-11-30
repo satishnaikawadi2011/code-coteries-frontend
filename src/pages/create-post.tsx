@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AppForm from 'src/components/shared/form/AppForm';
 import AppFormSelectField, { OptionType } from 'src/components/shared/form/AppFormSelectField';
 import AppFormSubmitButton from 'src/components/shared/form/AppFormSubmitButton';
@@ -17,6 +17,7 @@ import LoadingScreen from 'src/components/shared/LoadingScreen';
 import useDisplayError from 'src/hooks/useDisplayError';
 import useCloudinaryUpload from 'src/hooks/useCloudinaryUpload';
 import useCarbonAPI from 'src/hooks/useCarbonAPI';
+import {useHistory} from 'react-router-dom'
 
 const createPostSchema = Yup.object({
 	code: Yup.string().required('Please write the code snippet !'),
@@ -77,6 +78,7 @@ const CreatePostPage = () => {
 
 	const {  upload } = useCloudinaryUpload();
 	const { generateImage } = useCarbonAPI();
+	const history = useHistory();
 
 
 	const previewImageHandler = async (values: any) => {
@@ -95,15 +97,11 @@ const CreatePostPage = () => {
 		setBase64URI(carbonData?.encodedImage);
 		const cloudinaryData = await upload(`data:image/png;base64,${carbonData?.encodedImage}`);
 		console.log(cloudinaryData);
-		await createPost({variables:{createPostInput:{caption:transformedCaption,image_url:cloudinaryData.url,tagIds:tags}}})
+		const newPost = await createPost({variables:{createPostInput:{caption:transformedCaption,image_url:cloudinaryData.url,tagIds:tags}}})
 		setLoading(false);
+		history.push(`/p/${newPost!.data!.createPost!.id}`);
 	};
 
-	// useEffect(() => {
-	// 	console.log(createPostData);
-	// },[
-	// 	createPostData
-	// ])
 
 	const handleSubmit = async (values: any) => {
 		if (mode === 'preview') {

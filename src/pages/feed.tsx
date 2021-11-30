@@ -1,5 +1,5 @@
 import { Button, Hidden } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import FeedPostSkeleton from 'src/components/feed/FeedPostSkeleton';
 import FeedSideSuggestions from 'src/components/feed/FeedSideSuggestions';
 import Layout from 'src/components/shared/Layout';
@@ -10,6 +10,7 @@ import useDisplayError from 'src/hooks/useDisplayError';
 import { usePageBottom } from 'src/hooks/usePageBottom';
 import LoadingLargeIcon from 'src/icons/LargeLoadingIcon';
 import { useAuthStore } from 'src/store/auth';
+import { usePostStore } from 'src/store/post';
 import { useUserStore } from 'src/store/user';
 import { useFeedPageStyles } from 'src/styles/feed-page';
 
@@ -18,10 +19,17 @@ const FeedPost = React.lazy(() => import('../components/feed/FeedPost'));
 const FeedPage = () => {
   const classes = useFeedPageStyles();	
 	const [isEndOfFeed, setEndOfFeed] = React.useState(false);
-	const { feedIds } = useUserStore();
+  const { feedIds } = useUserStore();
+  const {feed,setFeed,addPosts} = usePostStore()
 	const {user,logout} = useAuthStore()
 	const { data, loading, fetchMore,error } = useGetFeedQuery({ variables: { getFeedInput: { feedIds, limit: 2 } } });
   const isPageBottom = usePageBottom();
+
+  useEffect(() => {
+    if (data) {
+      setFeed(data.getFeed as any);
+    }
+  },[data])
 
   useDisplayError([error]);
 
@@ -30,13 +38,12 @@ const FeedPage = () => {
       setEndOfFeed(true);
       return prev;
     }
-
+    addPosts([...fetchMoreResult.getFeed]);
     return { getFeed: [...prev.getFeed, ...fetchMoreResult.getFeed] };
   }, []);
 
   React.useEffect(() => {
     if (!isPageBottom || !data) return;
-    console.log('Here')
     const lastTimestamp = data.getFeed[data.getFeed.length - 1].created_at;
     console.log(lastTimestamp);
     const variables = { limit: 2, feedIds, lastTimestamp };
@@ -53,7 +60,7 @@ const FeedPage = () => {
       <Button onClick={() => logout()}>Logout</Button>
       <div className={classes.container}>
         <div>
-          {data?.getFeed.map((post, index) => (
+          {feed.map((post, index) => (
             <React.Suspense key={post.id} fallback={<FeedPostSkeleton />}>
               <FeedPost post={post as any} index={index} />
             </React.Suspense>

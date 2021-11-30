@@ -21,7 +21,7 @@ const UserCard: React.FC<Props> = ({ name, username, image_url = DEFAULT_USER_AV
 				<Avatar src={image_url} alt="User avatar" className={classes.avatar} />
 			</Link>
 			<div className={classes.nameWrapper}>
-				<Link to={`/${username}`}>
+				<Link style={{ color: '#000' }} to={`/${username}`}>
 					<Typography variant="subtitle2" className={classes.typography}>
 						{username}
 					</Typography>

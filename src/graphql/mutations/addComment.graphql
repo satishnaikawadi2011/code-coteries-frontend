@@ -4,11 +4,25 @@ mutation addComment($addCommentInput: AddCommentInput!) {
 			id
 			content
 			handle
+			created_at
+			user {
+				username
+				profile {
+					image_url
+				}
+			}
 		}
 		postComment {
 			id
 			content
 			handle
+			created_at
+			user {
+				username
+				profile {
+					image_url
+				}
+			}
 		}
 	}
 }

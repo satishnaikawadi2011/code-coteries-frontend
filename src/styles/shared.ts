@@ -1,6 +1,11 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
+const iconProps = {
+	backgroundRepeat: 'no-repeat',
+	height: 12
+};
+
 export const useFollowButtonStyles = makeStyles<Theme>((theme: Theme) => ({
 	button:
 		{
@@ -96,5 +101,66 @@ export const useOptionsDialogStyles = makeStyles((theme: Theme) => ({
 			color: `${theme.palette.error.main} !important` as any,
 			padding: '12px 8px !important' as any,
 			fontWeight: 'bold !important' as any
+		}
+}));
+
+export const useGridPostStyles = makeStyles((theme: Theme) => ({
+	image:
+		{
+			width: '100%',
+			userSelect: 'none'
+		},
+	gridPostContainer:
+		{
+			position: 'relative'
+		},
+	gridPostOverlay:
+		{
+			[theme.breakpoints.down('xs')]:
+				{
+					gridAutoFlow: 'row',
+					alignContent: 'space-evenly'
+				},
+			position: 'absolute',
+			display: 'grid',
+			placeItems: 'center',
+			gridAutoFlow: 'column',
+			width: '100%',
+			height: '100%',
+			justifyContent: 'space-evenly',
+			'&:hover':
+				{
+					background: 'rgba(0,0,0,0.6)',
+					cursor: 'pointer',
+					'& > div':
+						{
+							opacity: 1
+						}
+				}
+		},
+	gridPostInfo:
+		{
+			color: '#ffffff',
+			display: 'grid',
+			gridAutoFlow: 'column',
+			gridGap: 5,
+			placeItems: 'center',
+			opacity: 0
+		},
+	likes:
+		{
+			...iconProps,
+			backgroundPosition: '-328px -239px',
+			backgroundSize: '355px 344px',
+			height: 16,
+			width: 16
+		},
+	comments:
+		{
+			...iconProps,
+			backgroundPosition: '-327px -203px',
+			backgroundSize: '355px 344px',
+			height: 16,
+			width: 18
 		}
 }));

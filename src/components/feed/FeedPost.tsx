@@ -29,6 +29,7 @@ import FollowSuggestions from '../shared/FollowSuggestions';
 import OptionsDialogue from '../shared/OptionsDialogue';
 import CommentIcon from 'src/icons/CommentIcon';
 import ShareIcon from 'src/icons/ShareIcon';
+import { usePostStore } from 'src/store/post';
 
 interface FeedPostProps {
 	index?: number;
@@ -37,6 +38,7 @@ interface FeedPostProps {
 
 const FeedPost: React.FC<FeedPostProps> = ({ post, index }) => {
 	const classes = useFeedPostStyles();
+	
 	const [
 		showCaption,
 		setCaption
@@ -131,7 +133,7 @@ const FeedPost: React.FC<FeedPostProps> = ({ post, index }) => {
               View all {commentCount} comments
             </Typography>
           </Link>
-          {comments?.map((comment) => (
+          {comments?.slice(0,2).map((comment) => (
             <div key={comment.id}>
               <Link to={`/${comment.handle}`}>
                 <Typography
@@ -177,7 +179,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({ likes, postId, ownerId }) => {
 	const classes = useFeedPostStyles();
 
 	const { user } = useAuthStore();
-	// const feedIds = [...getMyFollowings()!.getMyFollowings.map(u => u.id), user!.id];
 
 	const isAlreadyLiked = likes.some((user_id) => user_id === user!.id);
 	const [
@@ -207,7 +208,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ likes, postId, ownerId }) => {
 		likePost({ variables: { postId }, update: removeLike });
 	}
 
-	return <Icon className={className} onClick={onClick} />;
+	return <Icon className={className} style={{width:30,height:30,cursor:'pointer'}} onClick={onClick} />;
 };
 
 interface CommentProps {
@@ -223,51 +224,14 @@ const Comment: React.FC<CommentProps> = ({ postId }) => {
 	const [
 		createComment
 	] = useAddCommentMutation();
+	const {addComment} = usePostStore()
 
-	const addComment: AddCommentType = (store, { data }) => {
-		const { content, handle, id } = data!.addComment.postComment!;
-
-		// Get existing feed data
-		const feedData = store.readQuery<GetFeedQuery>({
-			query: GetFeedDocument
-		})!;
-
-		const posts = [
-			...feedData!.getFeed
-		];
-		const postIndex = posts.findIndex((p) => p.id === postId);
-		const post = posts[postIndex];
-		const newComment = {
-			content,
-			handle,
-			id
-		};
-		const updatedComments = [
-			newComment,
-			...post.comments!
-		];
-		const updatedPost = {
-			...post,
-			comments: updatedComments,
-			commentCount: post.commentCount + 1
-		};
-		posts[postIndex] = updatedPost;
-
-		store.writeQuery<GetFeedQuery>({
-			query: GetFeedDocument,
-			data:
-				{
-					...feedData,
-					getFeed: posts
-				}
+	async function handleAddComment() {
+		const newComment = await createComment({
+			variables: { addCommentInput: { commentType: 'PostComment', content, entityId: postId } }
 		});
-	};
-
-	function handleAddComment() {
-		createComment({
-			variables: { addCommentInput: { commentType: 'PostComment', content, entityId: postId } },
-			update: addComment
-		});
+		addComment(postId, newComment!.data!.addComment!.postComment as any);
+		setContent('');
 	}
 
 	return (
@@ -336,7 +300,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({ postId }) => {
 		removePost({ variables: { postId } });
 	}
 
-	return <Icon className={classes.saveIcon} onClick={onClick} />;
+	return <Icon className={classes.saveIcon} style={{width:30,height:30,cursor:'pointer'}} onClick={onClick} />;
 };
 
 export default FeedPost;

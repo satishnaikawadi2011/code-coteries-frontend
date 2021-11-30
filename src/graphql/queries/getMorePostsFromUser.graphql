@@ -1,0 +1,8 @@
+query getMorePostsFromUser($userId: String!, $postId: String!, $limit: Float) {
+	getMorePostsFromUser(userId: $userId, postId: $postId, limit: $limit) {
+		id
+		image_url
+		likeCount
+		commentCount
+	}
+}
